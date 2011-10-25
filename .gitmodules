@@ -1,0 +1,3 @@
+[submodule "packages/fuel"]
+	path = packages/fuel
+	url = git@github.com:fuelphp/fuel.git

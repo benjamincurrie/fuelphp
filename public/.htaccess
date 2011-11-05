@@ -1,3 +1,7 @@
+
+# Set Environmental Variables
+SetEnv  FUEL_ENV  development
+
 <IfModule mod_rewrite.c>
     RewriteEngine on
 

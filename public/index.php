@@ -1,7 +1,8 @@
 <?php
 include dirname(__DIR__).'/apps/bootstrap.php';
 
-Fuel\Foundation\Kernel::load_app('main');
+use Fuel\Foundation\Kernel;
+use Fuel\Http\Request;
 
-$app = new Main\Application('dev');
-echo $app->serve(Fuel\Http\Request::make())->send();
+$app = new Main\Application();
+echo $app->serve(Request::make())->send();

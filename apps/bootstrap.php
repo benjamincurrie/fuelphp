@@ -4,7 +4,7 @@ include dirname(__DIR__).'/packages/fuel/bootstrap.php';
 use Fuel\Foundation\Environment;
 use Fuel\Foundation\Kernel;
 
-Environment::is('development', function ()
+Environment::is(array('development', 'test'), function ()
 {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
@@ -12,14 +12,12 @@ Environment::is('development', function ()
 
 Environment::is('production', function ()
 {
-	error_reporting(E_NONE);
+	error_reporting(0);
 	ini_set('display_errors', 0);
 });
 
 Environment::is('test', function ()
 {
-	error_reporting(-1);
-	ini_set('display_errors', 1);
 	include_once 'PHPUnit/Autoload.php';
 });
 

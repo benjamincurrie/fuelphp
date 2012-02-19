@@ -3,7 +3,7 @@
 use Fuel\Kernel\Application;
 use Fuel\Kernel\Router;
 
-class App extends Application
+class App extends Application\Base
 {
 	public function router(Router $router)
 	{

@@ -1,8 +1,9 @@
 <?php
 
-namespace Fuel\Kernel;
+namespace Fuel\Kernel\Application;
+use Fuel\Kernel\Loader;
 
-abstract class Application
+abstract class Base
 {
 	/**
 	 * @var  array  appnames and their classnames
@@ -25,12 +26,12 @@ abstract class Application
 	 *
 	 * @param   string   $appname
 	 * @param   Closure  $config
-	 * @return  Application
+	 * @return  Base
 	 * @throws  \OutOfBoundsException
 	 */
 	public static function load($appname, \Closure $config)
 	{
-		$loader = __loader()->load_package($appname, Loader::TYPE_APP)
+		$loader = __loader()->load_package($appname, Loader::TYPE_APP);
 		$loader->set_routable(true);
 
 		if ( ! isset(static::$_apps[$appname]))
@@ -43,7 +44,7 @@ abstract class Application
 	}
 
 	/**
-	 * @var  Loader\Base  the Application's own loader instance
+	 * @var  \Fuel\Kernel\Loader\Base  the Application's own loader instance
 	 */
 	protected $loader;
 
@@ -53,12 +54,12 @@ abstract class Application
 	protected $packages = array();
 
 	/**
-	 * @var  Request  contains the request object once created
+	 * @var  \Fuel\Kernel\Request\Base  contains the request object once created
 	 */
 	protected $request;
 
 	/**
-	 * @var  Response  contains the response object after execution
+	 * @var  \Fuel\Kernel\Response\Base  contains the response object after execution
 	 */
 	protected $response;
 
@@ -91,7 +92,7 @@ abstract class Application
 	 * Create the application main request
 	 *
 	 * @param   string  $uri
-	 * @return  Request
+	 * @return  \Fuel\Kernel\Request\Base
 	 */
 	public function request($uri)
 	{
@@ -102,7 +103,7 @@ abstract class Application
 	/**
 	 * Execute the application main request
 	 *
-	 * @return  Application
+	 * @return  Base
 	 */
 	public function execute()
 	{
@@ -113,7 +114,7 @@ abstract class Application
 	/**
 	 * Return the response object
 	 *
-	 * @return  Response
+	 * @return  \Fuel\Kernel\Response\Base
 	 */
 	public function response()
 	{
@@ -153,7 +154,7 @@ abstract class Application
 	 *
 	 * @param   string  $class
 	 * @param   string  $actual
-	 * @return  Application  to allow method chaining
+	 * @return  Base    to allow method chaining
 	 */
 	public function set_dic_class($class, $actual)
 	{
@@ -165,7 +166,7 @@ abstract class Application
 	 * Set classes that are fetched from the dic classes property
 	 *
 	 * @param   array   $classes
-	 * @return  Application  to allow method chaining
+	 * @return  Base    to allow method chaining
 	 */
 	public function set_dic_classes(array $classes)
 	{
@@ -210,7 +211,7 @@ abstract class Application
 	 * @param   string  $class
 	 * @param   string  $name
 	 * @param   object  $instance
-	 * @return  Application
+	 * @return  Base
 	 */
 	protected function set_dic_instance($class, $name, $instance)
 	{

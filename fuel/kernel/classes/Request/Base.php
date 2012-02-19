@@ -1,8 +1,8 @@
 <?php
 
-namespace Fuel\Kernel;
+namespace Fuel\Kernel\Request;
 
-interface Request
+interface Base
 {
 	/**
 	 * Execute the request

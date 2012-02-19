@@ -48,7 +48,7 @@ class Loader
 	 *
 	 * @param   string  $name
 	 * @param   int     $type
-	 * @return  Loader  for method chaining
+	 * @return  Loader\Base  for method chaining
 	 * @throws  \RuntimeException
 	 */
 	public function load_package($name, $type = static::TYPE_PACKAGE)
@@ -61,8 +61,52 @@ class Loader
 			throw new \RuntimeException('Package already loaded, can\'t be loaded twice.');
 		}
 
-		$this->packages[$type][$name] = require $path.'loader.php';
-		return $this;
+		$loader = require $path.'loader.php';
+		if ( ! $loader instanceof Loader\Package)
+		{
+			throw new \RuntimeException('Package loader must implement Fuel\\Kernel\\Loader\\Base');
+		}
+
+		$this->packages[$type][$name] = $loader;
+		return $loader;
+	}
+
+	/**
+	 * Fetch a specific package
+	 *
+	 * @param   string  $name
+	 * @param   int     $type
+	 * @return  Loader\Base
+	 * @throws  \OutOfBoundsException
+	 */
+	public function package($name, $type = static::TYPE_PACKAGE)
+	{
+		if ( ! isset($this->packages[$type][$name]))
+		{
+			throw new \OutOfBoundsException('Unknown package: '.$name);
+		}
+		return $this->packages[$type][$name];
+	}
+
+	/**
+	 * Fetch all packages or just those of a specific type
+	 *
+	 * @param   int|null  $type  null for all, int for a specific type
+	 * @return  array
+	 * @throws  \OutOfBoundsException
+	 */
+	public function packages($type = null)
+	{
+		if (is_null($type))
+		{
+			return $this->packages;
+		}
+		elseif ( ! isset($this->packages[$type]))
+		{
+			throw new \OutOfBoundsException('Unknown package type: '.$type);
+		}
+
+		return $this->packages[$type];
 	}
 
 	/**

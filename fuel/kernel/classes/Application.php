@@ -30,7 +30,8 @@ abstract class Application
 	 */
 	public static function load($appname, \Closure $config)
 	{
-		Loader::instance()->load_package($appname, Loader::TYPE_APP);
+		$loader = Loader::instance()->load_package($appname, Loader::TYPE_APP)
+		$loader->set_routable(true);
 
 		if ( ! isset(static::$_apps[$appname]))
 		{
@@ -38,8 +39,18 @@ abstract class Application
 		}
 
 		$class = static::$_apps[$appname];
-		return new $class($config);
+		return new $class($config, $loader);
 	}
+
+	/**
+	 * @var  Loader\Base  the Application's own loader instance
+	 */
+	protected $loader;
+
+	/**
+	 * @var  array  packages to load
+	 */
+	protected $packages = array();
 
 	/**
 	 * @var  Request  contains the request object once created
@@ -60,6 +71,21 @@ abstract class Application
 	 * @var  array  named instances organized by classname
 	 */
 	protected $dic_instances = array();
+
+	public function __construct(\Closure $config, Loader\Base $loader)
+	{
+		$this->loader = $loader;
+
+		foreach ($this->packages as $pkg)
+		{
+			try
+			{
+				Loader::instance()->load_package($pkg, Loader::TYPE_PACKAGE);
+			}
+			// ignore exception thrown for double package load
+			catch (\RuntimeException $e) {}
+		}
+	}
 
 	/**
 	 * Create the application main request
@@ -92,6 +118,34 @@ abstract class Application
 	public function response()
 	{
 		return $this->response->send_headers();
+	}
+
+	/**
+	 * Locate the controller
+	 *
+	 * @param   string  $controller
+	 * @return  bool|string  the controller classname or false on failure
+	 */
+	public function find_controller($controller)
+	{
+		// First attempt the package
+		if ($found = $this->loader->find_controller($controller))
+		{
+			return $found;
+		}
+
+		// if not found attempt loaded packages
+		foreach ($this->packages as $pkg)
+		{
+			is_array($pkg) and $pkg = reset($pkg);
+			if ($found = Loader::instance()->package($pkg)->find_controller($controller))
+			{
+				return $found;
+			}
+		}
+
+		// all is lost
+		return false;
 	}
 
 	/**

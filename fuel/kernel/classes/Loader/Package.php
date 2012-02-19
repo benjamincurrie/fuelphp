@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Loader;
 
-class Package
+class Package implements Base
 {
 	/**
 	 * @var  string  basepath for the package
@@ -23,6 +23,11 @@ class Package
 	 * @var  array  registered classes, without the base namespace
 	 */
 	protected $classes = array();
+
+	/**
+	 * @var  bool|string  whether this package is routable (bool) or routability is triggered by a prefix (string)
+	 */
+	protected $routable = false;
 
 	/**
 	 * @var  string|\Closure  loader used, has build in 'psr' or 'fuelv1' and can be a closure
@@ -222,6 +227,18 @@ class Package
 	}
 
 	/**
+	 * Sets routability of this package
+	 *
+	 * @param   bool  $routable
+	 * @return  Package
+	 */
+	public function set_routable($routable)
+	{
+		$this->routable = $routable;
+		return $this;
+	}
+
+	/**
 	 * Attempts to find a controller, loads the class and returns the classname if found
 	 *
 	 * @param   string  $controller
@@ -229,6 +246,22 @@ class Package
 	 */
 	public function find_controller($controller)
 	{
+		// Exit if not routable
+		if ( ! $this->routable)
+		{
+			return false;
+		}
+		elseif (is_string($this->routable))
+		{
+			// If string trigger isn't found at the beginning return false
+			if (strpos(strtolower($controller), $this->routable.'/') !== 0)
+			{
+				return false;
+			}
+			// Strip trigger from controller name
+			$controller = substr($controller, strlen($this->routable) + 1);
+		}
+
 		$namespace = $this->namespace;
 		if ($pos = strpos($controller, '\\'))
 		{

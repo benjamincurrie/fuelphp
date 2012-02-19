@@ -1,6 +1,4 @@
 <?php
 
-use Fuel\Kernel\Loader;
-
-return Loader::instance()->forge('Package')
+return __forge('Package')
 	->set_path(__DIR__);

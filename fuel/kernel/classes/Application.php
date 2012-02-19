@@ -30,7 +30,7 @@ abstract class Application
 	 */
 	public static function load($appname, \Closure $config)
 	{
-		$loader = Loader::instance()->load_package($appname, Loader::TYPE_APP)
+		$loader = __loader()->load_package($appname, Loader::TYPE_APP)
 		$loader->set_routable(true);
 
 		if ( ! isset(static::$_apps[$appname]))
@@ -80,7 +80,7 @@ abstract class Application
 		{
 			try
 			{
-				Loader::instance()->load_package($pkg, Loader::TYPE_PACKAGE);
+				__loader()->load_package($pkg, Loader::TYPE_PACKAGE);
 			}
 			// ignore exception thrown for double package load
 			catch (\RuntimeException $e) {}
@@ -95,7 +95,7 @@ abstract class Application
 	 */
 	public function request($uri)
 	{
-		$this->request = Loader::instance()->forge('Request', $uri);
+		$this->request = __loader()->forge('Request', $uri);
 		return $this;
 	}
 
@@ -138,7 +138,7 @@ abstract class Application
 		foreach ($this->packages as $pkg)
 		{
 			is_array($pkg) and $pkg = reset($pkg);
-			if ($found = Loader::instance()->package($pkg)->find_controller($controller))
+			if ($found = __loader()->package($pkg)->find_controller($controller))
 			{
 				return $found;
 			}
@@ -189,7 +189,7 @@ abstract class Application
 			return $this->dic_classes[$class];
 		}
 
-		return Loader::instance()->get_dic_class($class);
+		return __loader()->get_dic_class($class);
 	}
 
 	/**
@@ -230,7 +230,7 @@ abstract class Application
 	{
 		if ( ! isset($this->dic_instances[$class][$name]))
 		{
-			return Loader::instance()->get_dic_instance($class, $name);
+			return __loader()->get_dic_instance($class, $name);
 		}
 		return $this->dic_instances[$class][$name];
 	}

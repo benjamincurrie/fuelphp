@@ -10,16 +10,6 @@ class Loader
 	const TYPE_CORE = 100000;
 
 	/**
-	 * Returns the active Loader
-	 *
-	 * @return  Loader
-	 */
-	public static function instance()
-	{
-		return Environment::instance()->loader;
-	}
-
-	/**
 	 * @var  array  active loaders in a prioritized list
 	 */
 	protected $packages = array(

@@ -1,8 +1,8 @@
 <?php
 
-use Fuel\Kernel\Loader;
+__env()->add_path('kernel', __DIR__, true);
 
-return Loader::instance()->forge('Package')
+return __forge('Package')
 	->set_path(__DIR__)
 	->set_namespace('Fuel\\Kernel')
 	->set_dic_classes(array(

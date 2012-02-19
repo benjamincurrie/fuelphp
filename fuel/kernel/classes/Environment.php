@@ -118,6 +118,9 @@ class Environment
 		// Set the class & fileloader
 		$this->set_loader($this->loader);
 
+		// Load the system helpers
+		require_once $this->path('kernel').'helpers.php';
+
 		$init = true;
 
 		return $this;
@@ -225,7 +228,7 @@ class Environment
 			throw new \OutOfBoundsException('Already a path registered for name: '.$name);
 		}
 
-		$this->paths[$name] = $path;
+		$this->paths[$name] = trim($path, '/\\').'/';
 		return $this;
 	}
 

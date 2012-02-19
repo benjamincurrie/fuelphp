@@ -2,6 +2,7 @@
 
 namespace Fuel\Kernel\Application;
 use Fuel\Kernel\Loader;
+use Fuel\Kernel\Request;
 
 abstract class Base
 {
@@ -54,9 +55,14 @@ abstract class Base
 	protected $packages = array();
 
 	/**
-	 * @var  \Fuel\Kernel\Request\Base  contains the request object once created
+	 * @var  \Fuel\Kernel\Request\Base  contains the app main request object once created
 	 */
 	protected $request;
+
+	/**
+	 * @var  \Fuel\Kernel\Request\Base  current active Request, not necessarily the main request
+	 */
+	protected $active_request;
 
 	/**
 	 * @var  \Fuel\Kernel\Response\Base  contains the response object after execution
@@ -234,5 +240,25 @@ abstract class Base
 			return __loader()->get_dic_instance($class, $name);
 		}
 		return $this->dic_instances[$class][$name];
+	}
+
+	/**
+	 * Sets the current active request
+	 *
+	 * @param  \Fuel\Kernel\Request\Base  $request
+	 */
+	public function set_active_request(Request\Base $request)
+	{
+		$this->active_request = $request;
+	}
+
+	/**
+	 * Returns current active Request
+	 *
+	 * @return  \Fuel\Kernel\Request\Base
+	 */
+	public function active_request()
+	{
+		return $this->active_request;
 	}
 }

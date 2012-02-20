@@ -159,6 +159,62 @@ abstract class Base
 	}
 
 	/**
+	 * Attempts to find one or more files in the packages
+	 *
+	 * @param   string  $location
+	 * @param   string  $file
+	 * @param   bool    $multiple
+	 * @return  array|bool
+	 */
+	public function find_file($location, $file, $basepath = null, $multiple = false)
+	{
+		$return = $multiple ? array() : false;
+
+		// First search app
+		$path = $this->loader->find_file($location, $file, $basepath);
+		if ($path)
+		{
+			if ( ! $multiple)
+			{
+				return $path;
+			}
+			$return[] = $path;
+		}
+
+		// If not found or searching for multiple continue with packages
+		foreach ($this->packages as $pkg)
+		{
+			if ($path = _loader()->package($pkg)->find_file($location, $file, $basepath))
+			{
+				if ( ! $multiple)
+				{
+					return $path;
+				}
+				$return[] = $path;
+			}
+		}
+
+		if ($multiple)
+		{
+			return $return;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Find multiple files using find_file() method
+	 *
+	 * @param   $location
+	 * @param   $file
+	 * @return  array|bool
+	 */
+	public function find_files($location, $file, $basepath = null)
+	{
+		return $this->find_file($location, $file, $basepath, true);
+	}
+
+	/**
 	 * Locate the controller
 	 *
 	 * @param   string  $controller

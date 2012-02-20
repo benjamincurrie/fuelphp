@@ -169,53 +169,6 @@ class Loader
 	}
 
 	/**
-	 * Attempts to find one or more files in the packages
-	 *
-	 * @param   string  $location
-	 * @param   string  $file
-	 * @param   bool    $multiple
-	 * @return  array|bool
-	 */
-	public function find_file($location, $file, $multiple = false)
-	{
-		$return = $multiple ? array() : false;
-
-		foreach ($this->packages as $pkgs)
-		{
-			foreach ($pkgs as $pkg)
-			{
-				if ($file = $pkg->find_file($location, $file))
-				{
-					if ( ! $multiple)
-					{
-						return $file;
-					}
-					$return[] = $file;
-				}
-			}
-		}
-
-		if ($multiple)
-		{
-			return $return;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Find multiple files using find_file() method
-	 *
-	 * @param $location
-	 * @param $file
-	 * @return array|bool
-	 */
-	public function find_files($location, $file)
-	{
-		return $this->find_file($location, $file, true);
-	}
-
-	/**
 	 * Set class that is fetched from the dic classes property
 	 *
 	 * @param   string  $class

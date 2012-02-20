@@ -34,5 +34,5 @@ interface Base
 	 * @param   string  $file
 	 * @return  bool|string  full path or false for failure
 	 */
-	public function find_file($location, $file);
+	public function find_file($location, $file, $basepath = null);
 }

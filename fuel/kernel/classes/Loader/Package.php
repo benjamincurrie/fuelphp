@@ -287,13 +287,13 @@ class Package implements Base
 	 *
 	 * @param   string  $location
 	 * @param   string  $file
-	 * @param   string  $resources
+	 * @param   string  $basepath
 	 * @return  bool|string
 	 */
-	public function find_file($location, $file, $resources = null)
+	public function find_file($location, $file, $basepath = null)
 	{
 		$location  = trim($location, '/\\').'/';
-		$resources = is_null($resources) ? 'resources/' : trim($resources, '/\\').'/';
+		$basepath = is_null($basepath) ? 'resources/' : trim($basepath, '/\\').'/';
 
 		// if given attempt specific module load
 		if (($pos = strpos($file, ':')) !== false)
@@ -301,7 +301,7 @@ class Package implements Base
 			$module = substr($file, 0, $pos).'/';
 			if (isset($this->modules[$module]))
 			{
-				if (is_file($path = $this->path.$module.$resources.$location.substr($file, $pos + 1)))
+				if (is_file($path = $this->path.$module.$basepath.$location.substr($file, $pos + 1)))
 				{
 					return $path;
 				}
@@ -310,7 +310,7 @@ class Package implements Base
 		}
 
 		// attempt fetch from base
-		if (is_file($path = $this->path.$resources.$location.$file))
+		if (is_file($path = $this->path.$basepath.$location.$file))
 		{
 			return $path;
 		}
@@ -318,7 +318,7 @@ class Package implements Base
 		// attempt to find in modules
 		foreach ($this->modules as $path => $ns)
 		{
-			if (is_file($path = $this->path.'modules/'.$path.$resources.$location.$file))
+			if (is_file($path = $this->path.'modules/'.$path.$basepath.$location.$file))
 			{
 				return $path;
 			}

@@ -30,6 +30,11 @@ class Environment
 	}
 
 	/**
+	 * @var  array  environment names with closures as values
+	 */
+	protected $environments = array();
+
+	/**
 	 * @var  string  name of the current environment
 	 */
 	protected $name = 'development';
@@ -104,14 +109,47 @@ class Environment
 	 */
 	public function init(array $config)
 	{
+		// Prevent double init
 		static $init = false;
-
 		if ($init)
 		{
-			trigger_error('Environment config shouldn\'t be initiated twice.', E_USER_NOTICE);
+			trigger_error('Environment config can\'t be initiated more than once.', E_USER_ERROR);
 		}
 
-		foreach ($config as $key => $val)
+		// Fuel path must be given
+		if ( ! isset($config['path']) and ! isset($config['paths']['fuel']))
+		{
+			trigger_error('The path to the Fuel packages directory must be provided to Environment.', E_USER_ERROR);
+		}
+
+		// Rewrite single paths into multiple
+		if (isset($config['path']))
+		{
+			$config['paths']['fuel'] = $config['path'];
+			unset($config['path']);
+		}
+
+		// Load environments
+		$this->environments = require trim($config['paths']['fuel'], '\\/').'/environments.php';
+
+		// Run default environment
+		$env = array();
+		if (isset($this->environments['__default']))
+		{
+			$env = (array) call_user_func($this->environments['__default']);
+		}
+
+		// Run specific environment config when given
+		$config['name'] = isset($config['name']) ? $config['name'] : 'development';
+		if (isset($this->environments[$config['name']]))
+		{
+			$env = array_merge($env, (array) call_user_func($this->environments[$config['name']]));
+		}
+
+		// Merge given config with environment returns
+		$env = array_merge($env, $config);
+
+		foreach ($env as $key => $val)
 		{
 			if (property_exists($this, $key))
 			{

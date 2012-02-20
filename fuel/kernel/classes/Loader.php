@@ -19,16 +19,6 @@ class Loader
 	);
 
 	/**
-	 * @var  array  classnames and their 'translation'
-	 */
-	protected $dic_classes = array();
-
-	/**
-	 * @var  array  named instances organized by classname
-	 */
-	protected $dic_instances = array();
-
-	/**
 	 * @var  string  classname of the class currently being loaded
 	 */
 	protected $__current_class_load = '';
@@ -134,8 +124,10 @@ class Loader
 			throw $e;
 		}
 
-		// @deprecated  for Fuel 1.x BC
-		if (Environment::instance()->__get('global_core_alias') and $this->load_class($actual = $this->get_dic_class($class)))
+		// @deprecated  for Fuel 1.x BC, only works when an app is running
+		$env = Environment::instance();
+		if ($env->__get('global_core_alias')
+			and (($app = $env->active_app()) and $actual = $app->get_class($class)))
 		{
 			class_alias($actual, $class);
 			$this->__current_class_load = null;
@@ -166,91 +158,5 @@ class Loader
 				call_user_func($class.'::_init');
 			}
 		}
-	}
-
-	/**
-	 * Set class that is fetched from the dic classes property
-	 *
-	 * @param   string  $class
-	 * @param   string  $actual
-	 * @return  Loader  to allow method chaining
-	 */
-	public function set_dic_class($class, $actual)
-	{
-		$this->set_dic_classes(array($class => $actual));
-		return $this;
-	}
-
-	/**
-	 * Set classes that are fetched from the dic classes property
-	 *
-	 * @param   array   $classes
-	 * @return  Loader  to allow method chaining
-	 */
-	public function set_dic_classes(array $classes)
-	{
-		foreach ($classes as $class => $actual)
-		{
-			$this->dic_classes[$class] = $actual;
-		}
-		return $this;
-	}
-
-	/**
-	 * Translates a classname to the one set in the DiC classes property
-	 *
-	 * @param   string  $class
-	 * @return  string
-	 */
-	public function get_dic_class($class)
-	{
-		if (isset($this->dic_classes[$class]))
-		{
-			return $this->dic_classes[$class];
-		}
-		return $class;
-	}
-
-	/**
-	 * Forges a new object for the given class, supporting DI replacement
-	 *
-	 * @param   string  $class
-	 * @return  object
-	 */
-	public function forge($class)
-	{
-		$reflection = new \ReflectionClass($this->get_dic_class($class));
-		return $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
-	}
-
-	/**
-	 * Register an instance with the DiC
-	 *
-	 * @param   string  $class
-	 * @param   string  $name
-	 * @param   object  $instance
-	 * @return  Loader
-	 */
-	protected function set_dic_instance($class, $name, $instance)
-	{
-		$this->dic_instances[$class][$name] = $instance;
-		return $this;
-	}
-
-	/**
-	 * Fetch an instance from the DiC
-	 *
-	 * @param   string  $class
-	 * @param   string  $name
-	 * @return  object
-	 * @throws  \RuntimeException
-	 */
-	public function get_dic_instance($class, $name)
-	{
-		if ( ! isset($this->dic_instances[$class][$name]))
-		{
-			throw new \RuntimeException('Instance name "'.$name.'" not registered for class: '.$class);
-		}
-		return $this->dic_instances[$class][$name];
 	}
 }

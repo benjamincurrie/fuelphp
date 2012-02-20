@@ -1,6 +1,7 @@
 <?php
 
 namespace Fuel\Kernel\Application;
+use Fuel\Kernel\DiC;
 use Fuel\Kernel\Loader;
 use Fuel\Kernel\Request;
 
@@ -75,16 +76,11 @@ abstract class Base
 	protected $response;
 
 	/**
-	 * @var  array  classnames and their 'translation'
+	 * @var  \Fuel\Kernel\DiC\Container
 	 */
-	protected $dic_classes = array();
+	protected $dic;
 
-	/**
-	 * @var  array  named instances organized by classname
-	 */
-	protected $dic_instances = array();
-
-	public function __construct(\Closure $config, Loader\Base $loader)
+	public function __construct(\Closure $config, Loader $loader)
 	{
 		$this->loader = $loader;
 
@@ -97,6 +93,11 @@ abstract class Base
 			// ignore exception thrown for double package load
 			catch (\RuntimeException $e) {}
 		}
+
+		call_user_func($config);
+
+		// When not set by the closure default to Kernel DiC
+		( ! $this->dic instanceof DiC\Container) and $this->dic = new DiC\Base($this, _env()->dic);
 	}
 
 	/**
@@ -243,47 +244,14 @@ abstract class Base
 	}
 
 	/**
-	 * Set class that is fetched from the dic classes property
-	 *
-	 * @param   string  $class
-	 * @param   string  $actual
-	 * @return  Base    to allow method chaining
-	 */
-	public function set_dic_class($class, $actual)
-	{
-		$this->set_dic_classes(array($class => $actual));
-		return $this;
-	}
-
-	/**
-	 * Set classes that are fetched from the dic classes property
-	 *
-	 * @param   array   $classes
-	 * @return  Base    to allow method chaining
-	 */
-	public function set_dic_classes(array $classes)
-	{
-		foreach ($classes as $class => $actual)
-		{
-			$this->dic_classes[$class] = $actual;
-		}
-		return $this;
-	}
-
-	/**
 	 * Translates a classname to the one set in the DiC classes property
 	 *
 	 * @param   string  $class
 	 * @return  string
 	 */
-	public function get_dic_class($class)
+	public function get_class($class)
 	{
-		if (isset($this->dic_classes[$class]))
-		{
-			return $this->dic_classes[$class];
-		}
-
-		return _loader()->get_dic_class($class);
+		return $this->dic->get_class($class);
 	}
 
 	/**
@@ -294,30 +262,7 @@ abstract class Base
 	 */
 	public function forge($class)
 	{
-		$reflection  = new \ReflectionClass($this->get_dic_class($class));
-		$instance    = $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
-
-		// Setter support for the instance to know which app created it
-		if (method_exists($instance, '_set_app'))
-		{
-			$instance->_set_app($this);
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Register an instance with the DiC
-	 *
-	 * @param   string  $class
-	 * @param   string  $name
-	 * @param   object  $instance
-	 * @return  Base
-	 */
-	protected function set_dic_instance($class, $name, $instance)
-	{
-		$this->dic_instances[$class][$name] = $instance;
-		return $this;
+		return $this->dic->forge($class);
 	}
 
 	/**
@@ -328,13 +273,9 @@ abstract class Base
 	 * @return  object
 	 * @throws  \RuntimeException
 	 */
-	protected function get_dic_instance($class, $name)
+	protected function get_object($class, $name)
 	{
-		if ( ! isset($this->dic_instances[$class][$name]))
-		{
-			return _loader()->get_dic_instance($class, $name);
-		}
-		return $this->dic_instances[$class][$name];
+		$this->get_object($class, $name);
 	}
 
 	/**

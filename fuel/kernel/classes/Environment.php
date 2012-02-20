@@ -70,6 +70,11 @@ class Environment
 	protected $loader;
 
 	/**
+	 * @var  DiC\Base
+	 */
+	protected $dic;
+
+	/**
 	 * @var  Application\Base;
 	 */
 	protected $active_app;
@@ -130,6 +135,9 @@ class Environment
 
 		// Load the system helpers
 		require_once $this->path('kernel').'helpers.php';
+
+		// Set the environment DiC when not yet set
+		( ! $this->dic instanceof DiC\Container) and $this->dic = new DiC\Base();
 
 		$init = true;
 
@@ -225,10 +233,10 @@ class Environment
 	/**
 	 * Register a new named path
 	 *
-	 * @param   string  $name       name for the path
-	 * @param   string  $path       the full path
-	 * @param   bool    $overwrite  whether or not overwriting existing name is allowed
-	 * @return  Kernel  to allow method chaining
+	 * @param   string       $name       name for the path
+	 * @param   string       $path       the full path
+	 * @param   bool         $overwrite  whether or not overwriting existing name is allowed
+	 * @return  Environment  to allow method chaining
 	 * @throws  \OutOfBoundsException
 	 */
 	public function add_path($name, $path, $overwrite = false)
@@ -293,23 +301,6 @@ class Environment
 	}
 
 	/**
-	 * Make the protected variables publicly available
-	 *
-	 * @param   string  $name
-	 * @return  mixed
-	 * @throws  \OutOfBoundsException
-	 */
-	public function __get($name)
-	{
-		if ( ! property_exists($this, $name))
-		{
-			throw new \OutOfBoundsException('Fuel Environment has no such property.');
-		}
-
-		return $this->{$name};
-	}
-
-	/**
 	 * Sets the current active Application
 	 *
 	 * @param   Application\Base  $app
@@ -329,5 +320,57 @@ class Environment
 	public function active_app()
 	{
 		return $this->active_app;
+	}
+
+	/**
+	 * Translates a classname to the one set in the DiC classes property
+	 *
+	 * @param   string  $class
+	 * @return  string
+	 */
+	public function get_class($class)
+	{
+		return $this->dic->get_class($class);
+	}
+
+	/**
+	 * Forges a new object for the given class, supporting DI replacement
+	 *
+	 * @param   string  $class
+	 * @return  object
+	 */
+	public function forge($class)
+	{
+		return $this->dic->forge($class);
+	}
+
+	/**
+	 * Fetch an instance from the DiC
+	 *
+	 * @param   string  $class
+	 * @param   string  $name
+	 * @return  object
+	 * @throws  \RuntimeException
+	 */
+	protected function get_object($class, $name)
+	{
+		$this->get_object($class, $name);
+	}
+
+	/**
+	 * Make the protected variables publicly available
+	 *
+	 * @param   string  $name
+	 * @return  mixed
+	 * @throws  \OutOfBoundsException
+	 */
+	public function __get($name)
+	{
+		if ( ! property_exists($this, $name))
+		{
+			throw new \OutOfBoundsException('Fuel Environment has no such property.');
+		}
+
+		return $this->{$name};
 	}
 }

@@ -40,6 +40,11 @@ class Environment
 	protected $locale = null;
 
 	/**
+	 * @var  string  language identifier
+	 */
+	protected $language = 'en';
+
+	/**
 	 * @var  string|null  timezone name for php.net/timezones
 	 */
 	protected $timezone = 'UTC';

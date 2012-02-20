@@ -22,6 +22,7 @@ use Fuel\Kernel\Environment;
 $env = Environment::instance()->init(array(
 	'name'      => isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : 'development',
 	'locale'    => null,
+	'language'  => 'en',
 	'timezone'  => 'UTC',
 	'encoding'  => 'UTF8',
 	'paths'     => array(

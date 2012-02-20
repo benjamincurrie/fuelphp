@@ -135,7 +135,7 @@ class Loader
 		}
 
 		// @deprecated  for Fuel 1.x BC
-		if (Environment::instance()->global_core_alias and $this->load_class($actual = $this->get_dic_class($class)))
+		if (Environment::instance()->__get('global_core_alias') and $this->load_class($actual = $this->get_dic_class($class)))
 		{
 			class_alias($actual, $class);
 			$this->__current_class_load = null;

@@ -3,10 +3,15 @@
 /**
  * Fetch the Fuel Environment
  *
- * @return  Fuel\Kernel\Environment
+ * @return  mixed
  */
-function _env()
+function _env($var = null)
 {
+	if ($var)
+	{
+		return Fuel\Kernel\Environment::instance()->{$var};
+	}
+
 	return Fuel\Kernel\Environment::instance();
 }
 
@@ -17,7 +22,7 @@ function _env()
  */
 function _loader()
 {
-	return _env()->loader;
+	return _env('loader');
 }
 
 /**

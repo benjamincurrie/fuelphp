@@ -1,8 +1,9 @@
 <?php
 
-namespace Fuel\Kernel;
+namespace Fuel\Kernel\Data;
+use Fuel\Kernel\Application;
 
-abstract class Data
+abstract class Base
 {
 	/**
 	 * @var  array  keeps the data
@@ -13,6 +14,21 @@ abstract class Data
 	 * @var  array  descendants of this class
 	 */
 	protected $_children = array();
+
+	/**
+	 * @var  \Fuel\Kernel\Application\Base
+	 */
+	protected $_app;
+
+	/**
+	 * Magic Fuel method that is the setter for the current app
+	 *
+	 * @param  \Fuel\Kernel\Application\Base  $app
+	 */
+	public function _set_app(Application\Base $app)
+	{
+		$this->_app = $app;
+	}
 
 	/**
 	 * Gets a dot-notated key from data, with a default value if it does not exist.
@@ -48,7 +64,7 @@ abstract class Data
 	 *
 	 * @param   mixed   $key    The dot-notated key to set or array of keys
 	 * @param   mixed   $value  The value
-	 * @return  Data    for method chaining
+	 * @return  Base    for method chaining
 	 */
 	public function set($key, $value = null)
 	{

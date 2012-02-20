@@ -31,21 +31,48 @@ function _forge()
 }
 
 /**
- * Translates a dot notated key to a value from the given data.
- * It returns success of the operation, actual value found is returned as a reference
+ * Set a value on an array according to a dot-notated key
+ *
+ * @param   string              $key
+ * @param   array|\ArrayAccess  $data
+ * @param   bool                $setting
+ */
+function set_dots_to_array($key, &$input, $setting)
+{
+	$data =& $input;
+
+	// Explode the key and start iterating
+	$keys = explode('.', $key);
+	while (count($keys) > 1)
+	{
+		$key = array_shift($keys);
+		if ( ! isset($data[$key])
+			or ( ! is_array($data[$key]) and ! $data[$key] instanceof \ArrayAccess))
+		{
+			// Create new subarray or overwrite non array
+			$data[$key] = array();
+		}
+		$data =& $data[$key];
+	}
+
+	// Set when this is a set operation
+	if ( ! is_null($setting))
+	{
+		$data = $setting;
+	}
+}
+
+/**
+ * Get a value from an array according to a dot-notated key
  *
  * @param   string              $key
  * @param   array|\ArrayAccess  $data
  * @param   mixed               $return
- * @param   bool                $setting
  * @return  bool
  */
-function dots_to_array($key, &$data, &$return)
+function get_dots_to_array($key, &$input, &$return)
 {
-	// When the return is provided this is a set operation
-	$setting  = $return;
-	// Make the return var the data now
-	$return   = $data;
+	$return =& $input;
 
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
@@ -55,24 +82,10 @@ function dots_to_array($key, &$data, &$return)
 		if ( ! isset($return[$key])
 			or ( ! is_array($return[$key]) and ! $return[$key] instanceof \ArrayAccess))
 		{
-			if (is_null($setting))
-			{
-				// Value not found, return failure
-				return false;
-			}
-			else
-			{
-				// Create new subarray or overwrite non array
-				$return[$key] = array();
-			}
+			// Value not found, return failure
+			return false;
 		}
 		$return =& $return[$key];
-	}
-
-	// Set when this is a set operation
-	if ( ! is_null($setting))
-	{
-		$return = $setting;
 	}
 
 	// return success

@@ -40,7 +40,7 @@ abstract class Data
 			return $return;
 		}
 
-		return get_dots_to_array($key, $this->_data, $return) ? $return : $default;
+		return array_get_dot_key($key, $this->_data, $return) ? $return : $default;
 	}
 
 	/**
@@ -61,7 +61,7 @@ abstract class Data
 			return $this;
 		}
 
-		set_dots_to_array($key, $this->_data, $value);
+		array_set_dot_key($key, $this->_data, $value);
 		return $this;
 	}
 }

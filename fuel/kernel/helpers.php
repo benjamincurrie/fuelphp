@@ -37,7 +37,7 @@ function _forge()
  * @param   array|\ArrayAccess  $data
  * @param   bool                $setting
  */
-function set_dots_to_array($key, &$input, $setting)
+function array_set_dot_key($key, &$input, $setting)
 {
 	$data =& $input;
 
@@ -70,7 +70,7 @@ function set_dots_to_array($key, &$input, $setting)
  * @param   mixed               $return
  * @return  bool
  */
-function get_dots_to_array($key, &$input, &$return)
+function array_get_dot_key($key, &$input, &$return)
 {
 	$return =& $input;
 

@@ -32,7 +32,7 @@ abstract class Base
 	 */
 	public static function load($appname, \Closure $config)
 	{
-		$loader = __loader()->load_package($appname, Loader::TYPE_APP);
+		$loader = _loader()->load_package($appname, Loader::TYPE_APP);
 		$loader->set_routable(true);
 
 		if ( ! isset(static::$_apps[$appname]))
@@ -65,6 +65,11 @@ abstract class Base
 	protected $active_request;
 
 	/**
+	 * @var  Base  active Application before activation of this one
+	 */
+	protected $_before_activate;
+
+	/**
 	 * @var  \Fuel\Kernel\Response\Base  contains the response object after execution
 	 */
 	protected $response;
@@ -87,7 +92,7 @@ abstract class Base
 		{
 			try
 			{
-				__loader()->load_package($pkg, Loader::TYPE_PACKAGE);
+				_loader()->load_package($pkg, Loader::TYPE_PACKAGE);
 			}
 			// ignore exception thrown for double package load
 			catch (\RuntimeException $e) {}
@@ -102,7 +107,7 @@ abstract class Base
 	 */
 	public function request($uri)
 	{
-		$this->request = __loader()->forge('Request', $uri);
+		$this->request = _loader()->forge('Request', $uri);
 		return $this;
 	}
 
@@ -113,7 +118,33 @@ abstract class Base
 	 */
 	public function execute()
 	{
+		$this->activate();
 		$this->response = $this->request->execute();
+		$this->deactivate();
+		return $this;
+	}
+
+	/**
+	 * Makes this Application the active one
+	 *
+	 * @return  Base  for method chaining
+	 */
+	public function activate()
+	{
+		$this->_before_activate = _env()->active_app();
+		_env()->set_active_app($this);
+		return $this;
+	}
+
+	/**
+	 * Deactivates this Application and reactivates the previous active
+	 *
+	 * @return  Base  for method chaining
+	 */
+	public function deactivate()
+	{
+		_env()->set_active_app($this->_before_activate);
+		$this->_before_activate = null;
 		return $this;
 	}
 
@@ -145,7 +176,7 @@ abstract class Base
 		foreach ($this->packages as $pkg)
 		{
 			is_array($pkg) and $pkg = reset($pkg);
-			if ($found = __loader()->package($pkg)->find_controller($controller))
+			if ($found = _loader()->package($pkg)->find_controller($controller))
 			{
 				return $found;
 			}
@@ -196,7 +227,7 @@ abstract class Base
 			return $this->dic_classes[$class];
 		}
 
-		return __loader()->get_dic_class($class);
+		return _loader()->get_dic_class($class);
 	}
 
 	/**
@@ -207,8 +238,16 @@ abstract class Base
 	 */
 	public function forge($class)
 	{
-		$reflection = new \ReflectionClass($this->get_dic_class($class));
-		return $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
+		$reflection  = new \ReflectionClass($this->get_dic_class($class));
+		$instance    = $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
+
+		// Setter support for the instance to know which app created it
+		if (method_exists($instance, '_set_app'))
+		{
+			$instance->_set_app($this);
+		}
+
+		return $instance;
 	}
 
 	/**
@@ -237,7 +276,7 @@ abstract class Base
 	{
 		if ( ! isset($this->dic_instances[$class][$name]))
 		{
-			return __loader()->get_dic_instance($class, $name);
+			return _loader()->get_dic_instance($class, $name);
 		}
 		return $this->dic_instances[$class][$name];
 	}
@@ -247,7 +286,7 @@ abstract class Base
 	 *
 	 * @param  \Fuel\Kernel\Request\Base  $request
 	 */
-	public function set_active_request(Request\Base $request)
+	public function set_active_request($request)
 	{
 		$this->active_request = $request;
 	}

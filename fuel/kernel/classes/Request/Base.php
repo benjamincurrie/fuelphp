@@ -33,7 +33,7 @@ abstract class Base
 	}
 
 	/**
-	 * Makes this request the active one
+	 * Makes this Request the active one
 	 *
 	 * @return  Base  for method chaining
 	 */
@@ -45,7 +45,7 @@ abstract class Base
 	}
 
 	/**
-	 * Deactivates this request and reactivates the previous active
+	 * Deactivates this Request and reactivates the previous active
 	 *
 	 * @return  Base  for method chaining
 	 */

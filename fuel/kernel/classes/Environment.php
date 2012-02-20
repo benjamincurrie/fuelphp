@@ -65,6 +65,11 @@ class Environment
 	protected $loader;
 
 	/**
+	 * @var  Application\Base;
+	 */
+	protected $active_app;
+
+	/**
 	 * @var  array  container for environment variables
 	 */
 	protected $vars = array();
@@ -297,5 +302,27 @@ class Environment
 		}
 
 		return $this->{$name};
+	}
+
+	/**
+	 * Sets the current active Application
+	 *
+	 * @param   Application\Base  $app
+	 * @return  Environment
+	 */
+	public function set_active_app($app)
+	{
+		$this->active_app = $app;
+		return $this;
+	}
+
+	/**
+	 * Fetches the current active Application
+	 *
+	 * @return  Application\Base
+	 */
+	public function active_app()
+	{
+		return $this->active_app;
 	}
 }

@@ -1,4 +1,4 @@
 <?php
 
-return __forge('Package')
+return _forge('Package')
 	->set_path(__DIR__);

@@ -5,7 +5,7 @@
  *
  * @return  Fuel\Kernel\Environment
  */
-function __env()
+function _env()
 {
 	return Fuel\Kernel\Environment::instance();
 }
@@ -15,9 +15,9 @@ function __env()
  *
  * @return  Fuel\Kernel\Loader
  */
-function __loader()
+function _loader()
 {
-	return Fuel\Kernel\Environment::instance()->loader;
+	return _env()->loader;
 }
 
 /**
@@ -25,7 +25,7 @@ function __loader()
  *
  * @return  object
  */
-function __forge()
+function _forge()
 {
-	return call_user_func_array(array(__loader(), 'forge'), func_get_args());
+	return call_user_func_array(array(_loader(), 'forge'), func_get_args());
 }

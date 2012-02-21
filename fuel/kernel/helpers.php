@@ -32,7 +32,7 @@ function _loader()
  */
 function _forge()
 {
-	return call_user_func_array(array(_loader(), 'forge'), func_get_args());
+	return call_user_func_array(array(_env(), 'forge'), func_get_args());
 }
 
 /**

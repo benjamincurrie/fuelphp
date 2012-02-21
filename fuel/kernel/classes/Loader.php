@@ -19,6 +19,11 @@ class Loader
 	);
 
 	/**
+	 * @var  array  namespaces that may be aliased to global (for Fuel v1 BC)
+	 */
+	protected $global_ns_aliases = array();
+
+	/**
 	 * @var  string  classname of the class currently being loaded
 	 */
 	protected $__current_class_load = '';
@@ -124,14 +129,17 @@ class Loader
 			throw $e;
 		}
 
-		// @deprecated  for Fuel 1.x BC, only works when an app is running
-		$env = Environment::instance();
-		if ($env->__get('global_core_alias')
-			and (($app = $env->active_app()) and $actual = $app->get_class($class)))
+		/**
+		 * Support for Fuel v1 style classes
+		 */
+		foreach ($this->global_ns_aliases as $ns_alias)
 		{
-			class_alias($actual, $class);
-			$this->__current_class_load = null;
-			return true;
+			if ($this->load_class($ns_alias.$class))
+			{
+				class_alias($ns_alias.$class, $class);
+				$this->init_class($class);
+				return true;
+			}
 		}
 
 		if ($this->__current_class_load == $class)
@@ -158,5 +166,17 @@ class Loader
 				call_user_func($class.'::_init');
 			}
 		}
+	}
+
+	/**
+	 * Add a global namespace alias
+	 *
+	 * @param   string  $ns
+	 * @return  Loader  for method chaining
+	 */
+	public function add_global_ns_alias($ns)
+	{
+		$this->global_ns_aliases[] = trim($ns, '\\').'\\';
+		return $this;
 	}
 }

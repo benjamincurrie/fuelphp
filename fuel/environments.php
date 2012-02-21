@@ -14,6 +14,7 @@ return array(
 			'language'  => 'en',
 			'timezone'  => 'UTC',
 			'encoding'  => 'UTF8',
+			'packages'  => array('core'),
 		);
 	},
 

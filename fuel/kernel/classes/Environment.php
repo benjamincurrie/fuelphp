@@ -149,6 +149,9 @@ class Environment
 		// Merge given config with environment returns
 		$env = array_merge($env, $config);
 
+		// Separate out the packages for later usage (after loader init)
+		$packages = isset($env['packages']) ? (array) $env['packages'] : array();
+
 		foreach ($env as $key => $val)
 		{
 			if (property_exists($this, $key))
@@ -170,6 +173,12 @@ class Environment
 
 		// Set the class & fileloader
 		$this->set_loader($this->loader);
+
+		// Load additional 'Core' packages
+		foreach ($packages as $pkg)
+		{
+			$this->loader->load_package($pkg, Loader::TYPE_CORE);
+		}
 
 		// Load the system helpers
 		require_once $this->path('kernel').'helpers.php';

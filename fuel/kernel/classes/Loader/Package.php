@@ -25,6 +25,11 @@ class Package implements Loadable
 	protected $classes = array();
 
 	/**
+	 * @var  array  classes that are aliased: classname => actual class
+	 */
+	protected $class_aliases = array();
+
+	/**
 	 * @var  bool|string  whether this package is routable (bool) or routability is triggered by a prefix (string)
 	 */
 	protected $routable = false;
@@ -45,6 +50,11 @@ class Package implements Loadable
 		if (isset($this->classes[$class]))
 		{
 			require $this->classes[$class];
+			return true;
+		}
+		elseif (isset($this->class_aliases[$class]))
+		{
+			class_alias($this->class_aliases[$class], $class);
 			return true;
 		}
 
@@ -193,6 +203,33 @@ class Package implements Loadable
 		foreach ($classes as $class => $path)
 		{
 			$this->classes[$class] = $path;
+		}
+		return $this;
+	}
+
+	/**
+	 * Add an alias and the actual classname
+	 *
+	 * @param   string   $alias
+	 * @param   string   $actual
+	 * @return  Package  for method chaining
+	 */
+	public function add_class_alias($alias, $actual)
+	{
+		return $this->add_class_aliases(array($alias => $actual));
+	}
+
+	/**
+	 * Add multiple classes with their aliases
+	 *
+	 * @param   array    $classes
+	 * @return  Package  for method chaining
+	 */
+	public function add_class_aliases(array $classes = array())
+	{
+		foreach ($classes as $alias => $actual)
+		{
+			$this->class_aliases[$alias] = $actual;
 		}
 		return $this;
 	}

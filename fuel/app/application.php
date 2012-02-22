@@ -3,7 +3,7 @@
 use Classes\Application;
 use Classes\Router;
 
-class App extends Classes\Base
+class App extends Application\Base
 {
 	public function router(Router $router)
 	{

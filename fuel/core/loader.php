@@ -8,13 +8,11 @@ _env('dic')->set_classes(array(
 // Add the frontclasses as global aliases to support Fuel v1 static usage
 _loader()->add_global_ns_alias('Fuel\\Core\\Front');
 
-// Add aliases to allow extending into the classname
-_loader()->add_class_aliases(array(
-	'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
-	'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',
-));
-
 // Forge and return the Core Package object
 return _forge('Package')
 	->set_path(__DIR__)
-	->set_namespace('Fuel\\Core');
+	->set_namespace('Fuel\\Core')
+	->add_class_aliases(array(
+		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
+		'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',
+	));

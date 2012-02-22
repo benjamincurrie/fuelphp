@@ -65,14 +65,34 @@ class Environment
 	protected $encoding = 'UTF-8';
 
 	/**
+	 * @var  bool  whether this is run through the command line
+	 */
+	protected $is_cli = false;
+
+	/**
 	 * @var  array  appnames and their classnames
 	 */
-	protected $_apps = array();
+	protected $apps = array();
 
 	/**
 	 * @var  array  paths registered in the global environment
 	 */
 	protected $paths = array();
+
+	/**
+	 * @var  string  base url
+	 */
+	protected $base_url;
+
+	/**
+	 * @var  string
+	 */
+	protected $index_file;
+
+	/**
+	 * @var  Input  the input container
+	 */
+	protected $input;
 
 	/**
 	 * @var  Loader  the loader container
@@ -165,30 +185,29 @@ class Environment
 			}
 		}
 
-		// When mbstring setting was not given default to availability
-		if ( ! isset($config['mbstring']))
-		{
-			$this->mbstring = function_exists('mb_get_info');
-		}
-
-		// Actually set the locale, timezone and encoding
-		$this->set_locale($this->locale);
-		$this->set_timezone($this->timezone);
-		$this->set_encoding($this->encoding);
-
 		// Load the system helpers
 		require_once (isset($env['helpers']) ? $env['helpers'] : __DIR__.'/../helpers.php');
 
 		// Set the environment DiC when not yet set
-		if ( ! $this->dic instanceof DiC\Container)
+		if ( ! $this->dic instanceof DiC\Dependable)
 		{
-			! class_exists('Fuel\\Kernel\\DiC\\Container', false) and require __DIR__.'/DiC/Container.php';
+			! class_exists('Fuel\\Kernel\\DiC\\Dependable', false) and require __DIR__.'/DiC/Dependable.php';
 			! class_exists('Fuel\\Kernel\\DiC\\Base', false) and require __DIR__.'/DiC/Base.php';
 			$this->dic = new DiC\Base();
 		}
 
 		// Set the class & fileloader
 		$this->set_loader($this->loader);
+
+		// Load the input container if not yet set
+		( ! $this->input instanceof Input) and $this->input = new Input();
+
+		// Configure the localization options for PHP
+		$this->set_locale($this->locale);
+		$this->set_timezone($this->timezone);
+
+		// Detects and configures the PHP Environment
+		$this->php_env();
 
 		// Load additional 'Core' packages
 		foreach ($packages as $pkg)
@@ -199,6 +218,49 @@ class Environment
 		$init = true;
 
 		return $this;
+	}
+
+	/**
+	 * Detects and configures the PHP Environment
+	 */
+	protected function php_env()
+	{
+		$this->is_cli = (bool) defined('STDIN');
+
+		// Detect the base URL when not given
+		if (is_null($this->base_url) and ! $this->is_cli)
+		{
+			$this->base_url = $this->detect_base_url();
+		}
+
+		// When mbstring setting was not given default to availability
+		if ( ! isset($config['mbstring']))
+		{
+			$this->mbstring = function_exists('mb_get_info');
+		}
+		$this->set_encoding($this->encoding);
+	}
+
+	/**
+	 * Generates a base url.
+	 *
+	 * @return  string  the base url
+	 */
+	protected function detect_base_url()
+	{
+		$base_url = '';
+		if ($this->input->server('http_host'))
+		{
+			$base_url .= $this->input->protocol().'://'.$this->input->server('http_host');
+		}
+		if ($this->input->server('script_name'))
+		{
+			$base_url .= str_replace('\\', '/', dirname($this->input->server('script_name')));
+
+			// Add a slash if it is missing
+			$base_url = rtrim($base_url, '/').'/';
+		}
+		return $base_url;
 	}
 
 	/**
@@ -256,7 +318,7 @@ class Environment
 		elseif (empty($loader))
 		{
 			! class_exists('Fuel\\Kernel\\Loader', false) and require __DIR__.'/Loader.php';
-			! class_exists('Fuel\\Kernel\\Loader\\Base', false) and require __DIR__.'/Loader/Base.php';
+			! class_exists('Fuel\\Kernel\\Loader\\Loadable', false) and require __DIR__.'/Loader/Loadable.php';
 			! class_exists('Fuel\\Kernel\\Loader\\Package', false) and require __DIR__.'/Loader/Package.php';
 			$loader = new Loader();
 		}
@@ -280,12 +342,12 @@ class Environment
 	 */
 	public function app_class($appname)
 	{
-		if ( ! isset($this->_apps[$appname]))
+		if ( ! isset($this->apps[$appname]))
 		{
 			throw new \OutOfBoundsException('Unknown Appname: '.$appname);
 		}
 
-		return $this->_apps[$appname];
+		return $this->apps[$appname];
 	}
 
 	/**
@@ -297,7 +359,7 @@ class Environment
 	 */
 	public function register_app($appname, $classname)
 	{
-		$this->_apps[$appname] = $classname;
+		$this->apps[$appname] = $classname;
 		return $this;
 	}
 

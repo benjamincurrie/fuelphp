@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\DiC;
 
-class Base implements Container
+class Base implements Dependable
 {
 	/**
 	 * @var  array  classnames and their 'translation'
@@ -20,16 +20,16 @@ class Base implements Container
 	protected $app;
 
 	/**
-	 * @var  Container  parent DiC to fall back on
+	 * @var  Dependable  parent DiC to fall back on
 	 */
 	protected $parent;
 
 	public function __construct($app = null, $parent = null)
 	{
 		$this->app = $app;
-		if ($parent instanceof Container)
+		if ($parent instanceof Dependable)
 		{
-			return $parent;
+			$this->parent = $parent;
 		}
 	}
 
@@ -38,7 +38,7 @@ class Base implements Container
 	 *
 	 * @param   string     $classname
 	 * @param   string     $actual
-	 * @return  Container  to allow method chaining
+	 * @return  Dependable  to allow method chaining
 	 */
 	public function set_class($classname, $actual)
 	{
@@ -50,7 +50,7 @@ class Base implements Container
 	 * Set classes that are fetched from the classes property
 	 *
 	 * @param   array      $classnames
-	 * @return  Container  to allow method chaining
+	 * @return  Dependable  to allow method chaining
 	 */
 	public function set_classes(array $classnames)
 	{
@@ -110,7 +110,7 @@ class Base implements Container
 	 * @param   string  $classname
 	 * @param   string  $name
 	 * @param   object  $instance
-	 * @return  Container
+	 * @return  Dependable
 	 */
 	public function set_object($classname, $name, $instance)
 	{

@@ -1,7 +1,7 @@
 <?php
 
 namespace Fuel\Kernel\Request;
-use Fuel\Kernel\Request;
+use Fuel\Kernel\Application;
 
 abstract class Base
 {
@@ -25,11 +25,23 @@ abstract class Base
 	 */
 	public $app;
 
-	public function __construct(\Fuel\Kernel\Application\Base $app)
+	/**
+	 * @var  \Fuel\Kernel\Response\Responsible  Response after execution
+	 */
+	public $response;
+
+	/**
+	 * Magic Fuel method that is the setter for the current app
+	 *
+	 * @param  \Fuel\Kernel\Application\Base  $app
+	 */
+	public function _set_app(Application\Base $app)
 	{
 		$this->app = $app;
+
+		// Set request tree references
 		$this->parent = $this->app->active_request();
-		$this->parent->set_descendant($this);
+		$this->parent and $this->parent->set_descendant($this);
 	}
 
 	/**
@@ -96,5 +108,8 @@ abstract class Base
 	/**
 	 * Fetch the request response after execution
 	 */
-	abstract public function response();
+	public function response()
+	{
+		return $this->response;
+	}
 }

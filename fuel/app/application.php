@@ -1,9 +1,9 @@
 <?php
 
-use Fuel\Kernel\Application;
-use Fuel\Kernel\Router;
+use Classes\Application;
+use Classes\Router;
 
-class App extends Application\Base
+class App extends Classes\Base
 {
 	public function router(Router $router)
 	{

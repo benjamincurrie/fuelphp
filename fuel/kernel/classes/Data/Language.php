@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Data;
 
-class Language extends Base
+class Language extends \Classes\Data\Base
 {
 	/**
 	 * Load language file

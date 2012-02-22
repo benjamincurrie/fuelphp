@@ -19,6 +19,11 @@ class Loader
 	);
 
 	/**
+	 * @var  array  classes that are aliased: classname => actual class
+	 */
+	protected $class_aliases = array();
+
+	/**
 	 * @var  array  namespaces that may be aliased to global (for Fuel v1 BC)
 	 */
 	protected $global_ns_aliases = array();
@@ -174,6 +179,33 @@ class Loader
 				call_user_func($class.'::_init');
 			}
 		}
+	}
+
+	/**
+	 * Add an alias and the actual classname
+	 *
+	 * @param   string  $alias
+	 * @param   string  $actual
+	 * @return  Loader  for method chaining
+	 */
+	public function add_class_alias($alias, $actual)
+	{
+		return $this->add_class_aliases(array($alias => $actual));
+	}
+
+	/**
+	 * Add multiple classes with their aliases
+	 *
+	 * @param   array   $classes
+	 * @return  Loader  for method chaining
+	 */
+	public function add_class_aliases(array $classes = array())
+	{
+		foreach ($classes as $alias => $actual)
+		{
+			$this->class_aliases[$alias] = $actual;
+		}
+		return $this;
 	}
 
 	/**

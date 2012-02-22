@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Data;
 
-class Config extends Base
+class Config extends \Classes\Data\Base
 {
 	/**
 	 * Load config file

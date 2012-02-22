@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Request;
 
-class Fuel extends Base
+class Fuel extends \Classes\Request\Base
 {
 	/**
 	 * @var  string

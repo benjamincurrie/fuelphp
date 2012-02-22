@@ -3,7 +3,7 @@
 namespace Fuel\Kernel\View;
 use Fuel\Kernel\Application;
 
-abstract class Base implements Viewable
+class Base implements Viewable
 {
 	/**
 	 * @var  array  data to be passed to the view
@@ -63,5 +63,15 @@ abstract class Base implements Viewable
 		}
 
 		return $this->_data[$name];
+	}
+
+	/**
+	 * Renders and returns the view output
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return 'not yet implmented';
 	}
 }

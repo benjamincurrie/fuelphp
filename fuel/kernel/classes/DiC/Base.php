@@ -56,7 +56,7 @@ class Base implements Dependable
 	{
 		foreach ($classnames as $classname => $actual)
 		{
-			$this->classes[$classname] = $actual;
+			$this->classes[strtolower($classname)] = $actual;
 		}
 		return $this;
 	}
@@ -69,9 +69,10 @@ class Base implements Dependable
 	 */
 	public function get_class($classname)
 	{
-		if (isset($this->classes[$classname]))
+		$classlower = strtolower($classname);
+		if (isset($this->classes[$classlower]))
 		{
-			return $this->classes[$classname];
+			return $this->classes[$classlower];
 		}
 
 		return $this->parent ? $this->parent->get_class($classname) : $classname;
@@ -114,7 +115,7 @@ class Base implements Dependable
 	 */
 	public function set_object($classname, $name, $instance)
 	{
-		$this->objects[$classname][$name] = $instance;
+		$this->objects[strtolower($classname)][strtolower($name)] = $instance;
 		return $this;
 	}
 
@@ -128,6 +129,8 @@ class Base implements Dependable
 	 */
 	public function get_object($classname, $name)
 	{
+		$classname = strtolower($classname);
+		$name = strtolower($name);
 		if ( ! isset($this->objects[$classname][$name]))
 		{
 			if ( ! $this->parent)

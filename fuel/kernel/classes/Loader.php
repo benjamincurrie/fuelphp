@@ -13,9 +13,9 @@ class Loader
 	 * @var  array  active loaders in a prioritized list
 	 */
 	protected $packages = array(
-		static::TYPE_APP      => array(),
-		static::TYPE_PACKAGE  => array(),
-		static::TYPE_CORE     => array(),
+		Loader::TYPE_APP      => array(),
+		Loader::TYPE_PACKAGE  => array(),
+		Loader::TYPE_CORE     => array(),
 	);
 
 	/**
@@ -36,20 +36,28 @@ class Loader
 	 * @return  Loader\Base  for method chaining
 	 * @throws  \RuntimeException
 	 */
-	public function load_package($name, $type = static::TYPE_PACKAGE)
+	public function load_package($name, $type = Loader::TYPE_PACKAGE)
 	{
 		! is_array($name) and $name = array($name, Environment::instance()->path('fuel').$name.'/');
 		list($name, $path) = $name;
 
+		// Check if the package hasn't already been loaded
 		if (isset($this->packages[$type][$name]))
 		{
 			throw new \RuntimeException('Package already loaded, can\'t be loaded twice.');
 		}
 
+		// Fetch the Package loader
 		$loader = require $path.'loader.php';
 		if ( ! $loader instanceof Loader\Package)
 		{
 			throw new \RuntimeException('Package loader must implement Fuel\\Kernel\\Loader\\Base');
+		}
+
+		// If it's an app, include the Application class
+		if ($type == static::TYPE_APP)
+		{
+			require_once $path.'application.php';
 		}
 
 		$this->packages[$type][$name] = $loader;
@@ -64,7 +72,7 @@ class Loader
 	 * @return  Loader\Base
 	 * @throws  \OutOfBoundsException
 	 */
-	public function package($name, $type = static::TYPE_PACKAGE)
+	public function package($name, $type = Loader::TYPE_PACKAGE)
 	{
 		if ( ! isset($this->packages[$type][$name]))
 		{
@@ -102,7 +110,7 @@ class Loader
 	 */
 	public function load_class($class)
 	{
-		$class = ltrim('\\', $class);
+		$class = ltrim($class, '\\');
 
 		if (empty($this->__current_class_load))
 		{
@@ -134,7 +142,7 @@ class Loader
 		 */
 		foreach ($this->global_ns_aliases as $ns_alias)
 		{
-			if ($this->load_class($ns_alias.$class))
+			if (strpos($class, $ns_alias) !== 0 and $this->load_class($ns_alias.$class))
 			{
 				class_alias($ns_alias.$class, $class);
 				$this->init_class($class);

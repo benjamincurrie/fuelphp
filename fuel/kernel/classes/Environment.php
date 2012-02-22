@@ -65,7 +65,12 @@ class Environment
 	protected $encoding = 'UTF-8';
 
 	/**
-	 * @var  array  path to the packages directory
+	 * @var  array  appnames and their classnames
+	 */
+	protected $_apps = array();
+
+	/**
+	 * @var  array  paths registered in the global environment
 	 */
 	protected $paths = array();
 
@@ -171,6 +176,17 @@ class Environment
 		$this->set_timezone($this->timezone);
 		$this->set_encoding($this->encoding);
 
+		// Load the system helpers
+		require_once (isset($env['helpers']) ? $env['helpers'] : __DIR__.'/../helpers.php');
+
+		// Set the environment DiC when not yet set
+		if ( ! $this->dic instanceof DiC\Container)
+		{
+			! class_exists('Fuel\\Kernel\\DiC\\Container', false) and require __DIR__.'/DiC/Container.php';
+			! class_exists('Fuel\\Kernel\\DiC\\Base', false) and require __DIR__.'/DiC/Base.php';
+			$this->dic = new DiC\Base();
+		}
+
 		// Set the class & fileloader
 		$this->set_loader($this->loader);
 
@@ -179,12 +195,6 @@ class Environment
 		{
 			$this->loader->load_package($pkg, Loader::TYPE_CORE);
 		}
-
-		// Load the system helpers
-		require_once $this->path('kernel').'helpers.php';
-
-		// Set the environment DiC when not yet set
-		( ! $this->dic instanceof DiC\Container) and $this->dic = new DiC\Base();
 
 		$init = true;
 
@@ -245,8 +255,9 @@ class Environment
 		}
 		elseif (empty($loader))
 		{
-			require_once $this->path('fuel').'kernel/classes/Loader.php';
-			use Fuel\Kernel\Loader;
+			! class_exists('Fuel\\Kernel\\Loader', false) and require __DIR__.'/Loader.php';
+			! class_exists('Fuel\\Kernel\\Loader\\Base', false) and require __DIR__.'/Loader/Base.php';
+			! class_exists('Fuel\\Kernel\\Loader\\Package', false) and require __DIR__.'/Loader/Package.php';
 			$loader = new Loader();
 		}
 
@@ -261,6 +272,36 @@ class Environment
 	}
 
 	/**
+	 * Fetch the Application classname
+	 *
+	 * @param   string  $appname
+	 * @return  string
+	 * @throws  \OutOfBoundsException
+	 */
+	public function app_class($appname)
+	{
+		if ( ! isset($this->_apps[$appname]))
+		{
+			throw new \OutOfBoundsException('Unknown Appname: '.$appname);
+		}
+
+		return $this->_apps[$appname];
+	}
+
+	/**
+	 * Register a new app classname
+	 *
+	 * @param   string  $appname    Given name for an application
+	 * @param   string  $classname  Classname for the application
+	 * @return  Environment
+	 */
+	public function register_app($appname, $classname)
+	{
+		$this->_apps[$appname] = $classname;
+		return $this;
+	}
+
+	/**
 	 * Fetch the full path for a given pathname
 	 *
 	 * @param   string  $name
@@ -271,7 +312,7 @@ class Environment
 	{
 		if ( ! isset($this->paths[$name]))
 		{
-			throw new \OutOfBoundsException('Unknown path requested.');
+			throw new \OutOfBoundsException('Unknown path requested: '.$name);
 		}
 
 		return $this->paths[$name];

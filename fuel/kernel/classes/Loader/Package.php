@@ -32,7 +32,7 @@ class Package implements Base
 	/**
 	 * @var  string|\Closure  loader used, has build in 'psr' or 'fuelv1' and can be a closure
 	 */
-	protected $loader;
+	protected $loader = 'psr';
 
 	/**
 	 * Attempt to load a class from the package
@@ -48,7 +48,7 @@ class Package implements Base
 			return true;
 		}
 
-		if (strpos($class, $this->namespace) !== 0)
+		if ($this->namespace and strpos($class, $this->namespace) !== 0)
 		{
 			return false;
 		}
@@ -103,9 +103,9 @@ class Package implements Base
 		{
 			$namespace = substr($class, 0, $last_ns_pos);
 			$class = substr($class, $last_ns_pos + 1);
-			$file = str_replace('\\', DS, $namespace).DS;
+			$file = str_replace('\\', '/', $namespace).'/';
 		}
-		$file .= str_replace('_', DS, $class).'.php';
+		$file .= str_replace('_', '/', $class).'.php';
 
 		return $file;
 	}

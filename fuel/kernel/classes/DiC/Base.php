@@ -91,8 +91,9 @@ class Base implements Container
 			throw new \RuntimeException('Class "'.$classname.'" not found.');
 		}
 
+		$args        = array_slice(func_get_args(), 1);
 		$reflection  = new \ReflectionClass($classname);
-		$instance    = $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
+		$instance    = $args ? $reflection->newInstanceArgs() : $reflection->newInstance();
 
 		// Setter support for the instance to know which app created it
 		if ($reflection->hasMethod('_set_app'))
@@ -111,7 +112,7 @@ class Base implements Container
 	 * @param   object  $instance
 	 * @return  Container
 	 */
-	protected function set_object($classname, $name, $instance)
+	public function set_object($classname, $name, $instance)
 	{
 		$this->objects[$classname][$name] = $instance;
 		return $this;
@@ -125,7 +126,7 @@ class Base implements Container
 	 * @return  object
 	 * @throws  \RuntimeException
 	 */
-	protected function get_object($classname, $name)
+	public function get_object($classname, $name)
 	{
 		if ( ! isset($this->objects[$classname][$name]))
 		{

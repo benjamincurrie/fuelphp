@@ -8,22 +8,6 @@ use Fuel\Kernel\Request;
 abstract class Base
 {
 	/**
-	 * @var  array  appnames and their classnames
-	 */
-	protected static $_apps = array();
-
-	/**
-	 * Register a new app classname
-	 *
-	 * @param  string  $appname    Given name for an application
-	 * @param  string  $classname  Classname for the application
-	 */
-	public static function register($appname, $classname)
-	{
-		static::$_apps[$appname] = $classname;
-	}
-
-	/**
 	 * Serve the application as configured the name
 	 *
 	 * @param   string   $appname
@@ -36,12 +20,7 @@ abstract class Base
 		$loader = _loader()->load_package($appname, Loader::TYPE_APP);
 		$loader->set_routable(true);
 
-		if ( ! isset(static::$_apps[$appname]))
-		{
-			throw new \OutOfBoundsException('Unknown Appname.');
-		}
-
-		$class = static::$_apps[$appname];
+		$class = _env()->app_class($appname);
 		return new $class($config, $loader);
 	}
 
@@ -80,7 +59,7 @@ abstract class Base
 	 */
 	protected $dic;
 
-	public function __construct(\Closure $config, Loader $loader)
+	public function __construct(\Closure $config, Loader\Base $loader)
 	{
 		$this->loader = $loader;
 

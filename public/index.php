@@ -22,7 +22,7 @@ $env = Environment::instance()->init(array(
  * Initialize Application in package 'app'
  */
 use Fuel\Kernel\Application\Base as Application;
-$app = Application::load('app', function($config) {});
+$app = Application::load('app', function() {});
 
 /**
  * Run the app and output the response

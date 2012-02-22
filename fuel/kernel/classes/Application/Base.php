@@ -25,7 +25,7 @@ abstract class Base
 	}
 
 	/**
-	 * @var  \Fuel\Kernel\Loader\Loadable  the Application's own loader instance
+	 * @var  \Fuel\Kernel\Loader\Base  the Application's own loader instance
 	 */
 	protected $loader;
 
@@ -50,16 +50,16 @@ abstract class Base
 	protected $_before_activate;
 
 	/**
-	 * @var  \Fuel\Kernel\Response\Responsible  contains the response object after execution
+	 * @var  \Fuel\Kernel\Response\Base  contains the response object after execution
 	 */
 	protected $response;
 
 	/**
-	 * @var  \Fuel\Kernel\DiC\Dependable
+	 * @var  \Fuel\Kernel\DiC\Container
 	 */
 	protected $dic;
 
-	public function __construct(\Closure $config, Loader\Loadable $loader)
+	public function __construct(\Closure $config, Loader\Base $loader)
 	{
 		$this->loader = $loader;
 
@@ -76,7 +76,7 @@ abstract class Base
 		call_user_func($config);
 
 		// When not set by the closure default to Kernel DiC
-		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env()->dic);
+		( ! $this->dic instanceof DiC\Container) and $this->dic = new DiC\Base($this, _env()->dic);
 	}
 
 	/**
@@ -87,7 +87,7 @@ abstract class Base
 	 */
 	public function request($uri)
 	{
-		$this->request = $this->dic->forge('Request', $uri);
+		$this->request = _loader()->forge('Request', $uri);
 		return $this;
 	}
 
@@ -131,7 +131,7 @@ abstract class Base
 	/**
 	 * Return the response object
 	 *
-	 * @return  \Fuel\Kernel\Response\Responsible
+	 * @return  \Fuel\Kernel\Response\Base
 	 */
 	public function response()
 	{

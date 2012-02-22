@@ -27,4 +27,4 @@ $app = Application::load('app', function() {});
 /**
  * Run the app and output the response
  */
-echo $app->request(_env('input')->detect_uri())->execute()->response();
+echo $app->request(_env('input')->uri())->execute()->response();

@@ -2,7 +2,7 @@
 
 // Add some Core classes to the global DiC
 _env('dic')->set_classes(array(
-	// 'Session' => 'Fuel\\Core\\Session',
+	'Request_Curl' => 'Fuel\\Core\\Request\\Curl',
 ));
 
 // Add the frontclasses as global aliases to support Fuel v1 static usage

@@ -2,11 +2,11 @@
 
 namespace Fuel\Kernel\DiC;
 
-interface Container
+interface Dependable
 {
 	/**
 	 * @param  \Fuel\Kernel\Application\Base  $app
-	 * @param  \Fuel\Kernel\DiC\Container     $parent
+	 * @param  \Fuel\Kernel\DiC\Dependable     $parent
 	 */
 	public function __construct($app = null, $parent = null);
 
@@ -15,7 +15,7 @@ interface Container
 	 *
 	 * @param   string  $class
 	 * @param   string  $actual
-	 * @return  Container
+	 * @return  Dependable
 	 */
 	public function set_class($classname, $actual);
 
@@ -23,7 +23,7 @@ interface Container
 	 * Add multiple classes to use for classnames
 	 *
 	 * @param   array  $classes
-	 * @return  Container
+	 * @return  Dependable
 	 */
 	public function set_classes(array $classenames);
 
@@ -49,7 +49,7 @@ interface Container
 	 * @param   string  $class
 	 * @param   string  $name
 	 * @param   object  $instance
-	 * @return  Container
+	 * @return  Dependable
 	 */
 	public function set_object($classname, $name, $instance);
 

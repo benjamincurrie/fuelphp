@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Loader;
 
-class Package implements Base
+class Package implements Loadable
 {
 	/**
 	 * @var  string  basepath for the package

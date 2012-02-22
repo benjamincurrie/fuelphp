@@ -17,16 +17,21 @@ abstract class Base
 	protected static $action_prefix = 'action_';
 
 	/**
-	 * @var  Application
+	 * @var  \Fuel\Kernel\Application\Base
 	 */
 	public $app;
 
 	/**
-	 * @var  \Fuel\Kernel\Loader\Base
+	 * @var  \Fuel\Kernel\Loader\Loadable
 	 */
 	public $loader;
 
-	public function __construct(Application $app)
+	/**
+	 * Magic Fuel method that is the setter for the current app
+	 *
+	 * @param  \Fuel\Kernel\Application\Base  $app
+	 */
+	public function _set_app(Application\Base $app)
 	{
 		$this->app     = $app;
 		$this->loader  = $app->loader;

@@ -33,7 +33,7 @@ class Loader
 	 *
 	 * @param   string  $name
 	 * @param   int     $type
-	 * @return  Loader\Base  for method chaining
+	 * @return  Loader\Loadable  for method chaining
 	 * @throws  \RuntimeException
 	 */
 	public function load_package($name, $type = Loader::TYPE_PACKAGE)
@@ -69,7 +69,7 @@ class Loader
 	 *
 	 * @param   string  $name
 	 * @param   int     $type
-	 * @return  Loader\Base
+	 * @return  Loader\Loadable
 	 * @throws  \OutOfBoundsException
 	 */
 	public function package($name, $type = Loader::TYPE_PACKAGE)

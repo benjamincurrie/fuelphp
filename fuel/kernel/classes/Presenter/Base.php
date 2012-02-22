@@ -21,6 +21,11 @@ abstract class Base
 	protected $_app;
 
 	/**
+	 * @var  \Fuel\Kernel\Loader\Loadable
+	 */
+	protected $_loader;
+
+	/**
 	 * @var  \Fuel\Kernel\Request\Base
 	 */
 	protected $_context;
@@ -44,6 +49,7 @@ abstract class Base
 	public function _set_app(Application\Base $app)
 	{
 		$this->_app = $app;
+		$this->_loader = $app->loader;
 		$this->_context = $app->active_request();
 	}
 

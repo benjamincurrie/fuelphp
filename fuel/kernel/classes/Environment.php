@@ -180,9 +180,9 @@ class Environment
 		require_once (isset($env['helpers']) ? $env['helpers'] : __DIR__.'/../helpers.php');
 
 		// Set the environment DiC when not yet set
-		if ( ! $this->dic instanceof DiC\Container)
+		if ( ! $this->dic instanceof DiC\Dependable)
 		{
-			! class_exists('Fuel\\Kernel\\DiC\\Container', false) and require __DIR__.'/DiC/Container.php';
+			! class_exists('Fuel\\Kernel\\DiC\\Dependable', false) and require __DIR__.'/DiC/Dependable.php';
 			! class_exists('Fuel\\Kernel\\DiC\\Base', false) and require __DIR__.'/DiC/Base.php';
 			$this->dic = new DiC\Base();
 		}
@@ -256,7 +256,7 @@ class Environment
 		elseif (empty($loader))
 		{
 			! class_exists('Fuel\\Kernel\\Loader', false) and require __DIR__.'/Loader.php';
-			! class_exists('Fuel\\Kernel\\Loader\\Base', false) and require __DIR__.'/Loader/Base.php';
+			! class_exists('Fuel\\Kernel\\Loader\\Loadable', false) and require __DIR__.'/Loader/Loadable.php';
 			! class_exists('Fuel\\Kernel\\Loader\\Package', false) and require __DIR__.'/Loader/Package.php';
 			$loader = new Loader();
 		}

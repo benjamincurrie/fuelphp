@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Response;
 
-interface Base
+interface Responsible
 {
 	/**
 	 * Constructor must take a body and an array of headers

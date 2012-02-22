@@ -2,7 +2,7 @@
 
 namespace Fuel\Kernel\Loader;
 
-interface Base
+interface Loadable
 {
 	/**
 	 * Classloader

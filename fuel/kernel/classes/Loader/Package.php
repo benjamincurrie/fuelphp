@@ -15,6 +15,11 @@ class Package implements Loadable
 	protected $namespace = '';
 
 	/**
+	 * @var  string  string to prefix the Controller classname with, will be relative to the base namespace
+	 */
+	protected $controller_prefix = 'Controller\\';
+
+	/**
 	 * @var  array  package modules with array(relative path => relative subnamespace) (with trailing backslash)
 	 */
 	protected $modules = array();
@@ -47,23 +52,29 @@ class Package implements Loadable
 	 */
 	public function load_class($class)
 	{
+		// Check if the class path was registered with the Package
 		if (isset($this->classes[$class]))
 		{
 			require $this->classes[$class];
 			return true;
 		}
+		// Check if the request class is an alias registered with the Package
 		elseif (isset($this->class_aliases[$class]))
 		{
 			class_alias($this->class_aliases[$class], $class);
 			return true;
 		}
 
+		// If a base namespace was set and doesn't match the class: fail
 		if ($this->namespace and strpos($class, $this->namespace) !== 0)
 		{
 			return false;
 		}
+
+		// Anything further will be relative to the base namespace
 		$class = substr($class, strlen($this->namespace));
 
+		// Check if any of the modules' namespaces matches the class and make it relative on such a match
 		$path = $this->path;
 		foreach ($this->modules as $m_path => $m_namespace)
 		{
@@ -76,6 +87,7 @@ class Package implements Loadable
 		}
 		$path .= 'classes/';
 
+		// Pick the loader to use, this optimizes PSR and Fuelv1 loaders over any others
 		switch ($this->loader)
 		{
 			case 'psr':
@@ -89,12 +101,14 @@ class Package implements Loadable
 				$path .= call_user_func_array($this->loader, array($class, $path));
 		}
 
+		// When found include the file and return success
 		if (is_file($path))
 		{
 			require $path;
 			return true;
 		}
 
+		// ... still here? Failure.
 		return false;
 	}
 	/**
@@ -276,6 +290,18 @@ class Package implements Loadable
 	}
 
 	/**
+	 * Changes the Controller classname prefix
+	 *
+	 * @param   string  $prefix
+	 * @return  Package
+	 */
+	public function set_controller_prefix($prefix)
+	{
+		$this->controller_prefix = (string) $prefix;
+		return $this;
+	}
+
+	/**
 	 * Attempts to find a controller, loads the class and returns the classname if found
 	 *
 	 * @param   string  $controller
@@ -283,15 +309,17 @@ class Package implements Loadable
 	 */
 	public function find_controller($controller)
 	{
-		// Exit if not routable
+		// Fail if not routable
 		if ( ! $this->routable)
 		{
 			return false;
 		}
+		// If the routable property is a string then this requires a trigger
+		// segment to be routable (and all routes will be relative to the trigger)
 		elseif (is_string($this->routable))
 		{
 			// If string trigger isn't found at the beginning return false
-			if (strpos(strtolower($controller), $this->routable.'/') !== 0)
+			if (strpos(strtolower($controller), strtolower($this->routable).'/') !== 0)
 			{
 				return false;
 			}
@@ -299,8 +327,9 @@ class Package implements Loadable
 			$controller = substr($controller, strlen($this->routable) + 1);
 		}
 
+		// Build the namespace for the controller
 		$namespace = $this->namespace;
-		if ($pos = strpos($controller, '\\'))
+		if ($pos = strpos($controller, '/'))
 		{
 			$module = substr($controller, 0, $pos).'/';
 			if (isset($this->modules[$module]))
@@ -310,10 +339,10 @@ class Package implements Loadable
 			}
 		}
 
-		$controller = $namespace.'Controller\\'.$controller;
+		$controller = $namespace.$this->controller_prefix.str_replace('/', '_', $controller);
 		if ($this->load_class($controller))
 		{
-			return $this->namespace.$controller;
+			return $controller;
 		}
 
 		return false;

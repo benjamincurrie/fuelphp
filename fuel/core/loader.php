@@ -1,6 +1,6 @@
 <?php
 
-// Add some paths to the global DiC
+// Add some Core classes to the global DiC
 _env('dic')->set_classes(array(
 	// 'Session' => 'Fuel\\Core\\Session',
 ));

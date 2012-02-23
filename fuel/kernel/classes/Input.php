@@ -90,7 +90,7 @@ class Input
 			? $this->files = $env_vars['files']
 			: $this->files =& $_FILES;
 
-		$this->parent = $parent instanceof static ? $parent : _env('input');
+		$this->parent = $parent instanceof static ? $parent : null;
 	}
 
 	/**
@@ -323,8 +323,12 @@ class Input
 		{
 			return $this->files;
 		}
+		elseif ( ! array_get_dot_key($index, $this->files, $return))
+		{
+			return $this->parent ? $this->parent->file($index, $default) : $default;
+		}
 
-		return array_get_dot_key($index, $this->files, $return) ? $return : $default;
+		return $return;
 	}
 
 	/**
@@ -336,7 +340,12 @@ class Input
 	 */
 	public function param($index = null, $default = null)
 	{
-		return array_get_dot_key($index, $this->input_vars, $return) ? $return : $default;
+		if ( ! array_get_dot_key($index, $this->input_vars, $return))
+		{
+			return $this->parent ? $this->parent->param($index, $default) : $default;
+		}
+
+		return $return;
 	}
 
 	/**
@@ -352,8 +361,12 @@ class Input
 		{
 			return $this->cookie;
 		}
+		elseif ( ! array_get_dot_key($index, $this->cookie, $return))
+		{
+			return $this->parent ? $this->parent->cookie($index, $default) : $default;
+		}
 
-		return array_get_dot_key($index, $this->cookie, $return) ? $return : $default;
+		return $return;
 	}
 
 	/**
@@ -369,7 +382,11 @@ class Input
 		{
 			return $this->server_vars;
 		}
+		elseif ( ! array_get_dot_key(strtoupper($index), $this->server_vars, $return))
+		{
+			return $this->parent ? $this->parent->server($index, $default) : $default;
+		}
 
-		return array_get_dot_key(strtoupper($index), $this->server_vars, $return) ? $return : $default;
+		return $return;
 	}
 }

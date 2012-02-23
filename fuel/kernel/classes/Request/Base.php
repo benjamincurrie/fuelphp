@@ -26,6 +26,11 @@ abstract class Base
 	protected $app;
 
 	/**
+	 * @var  \Fuel\Kernel\Input
+	 */
+	protected $input;
+
+	/**
 	 * @var  \Fuel\Kernel\Response\Responsible  Response after execution
 	 */
 	protected $response;
@@ -42,6 +47,9 @@ abstract class Base
 		// Set request tree references
 		$this->parent = $this->app->active_request();
 		$this->parent and $this->parent->set_descendant($this);
+
+		// Default the Input object to the environment
+		$this->input = _env('input');
 	}
 
 	/**
@@ -96,6 +104,16 @@ abstract class Base
 	public function get_descendants()
 	{
 		return $this->descendants;
+	}
+
+	/**
+	 * Return the Input for this object
+	 *
+	 * @return  \Fuel\Kernel\Input
+	 */
+	public function input()
+	{
+		return $this->input;
 	}
 
 	/**

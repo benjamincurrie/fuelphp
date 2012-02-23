@@ -6,11 +6,6 @@ use Fuel\Kernel\Application;
 class Fuel extends \Classes\Request\Base
 {
 	/**
-	 * @var  \Fuel\Kernel\Input
-	 */
-	protected $input;
-
-	/**
 	 * @var  string
 	 */
 	protected $request_uri = '';
@@ -21,6 +16,11 @@ class Fuel extends \Classes\Request\Base
 		$this->input        = $input ?: _env('input');
 	}
 
+	/**
+	 * Magic Fuel method that is the setter for the current app
+	 *
+	 * @param  \Fuel\Kernel\Application\Base  $app
+	 */
 	public function _set_app(Application\Base $app)
 	{
 		parent::_set_app($app);
@@ -28,11 +28,7 @@ class Fuel extends \Classes\Request\Base
 		// Create the new Input object when an array was passed
 		if (is_array($this->input))
 		{
-			$this->input = $app->forge('Input',
-				($this->parent and property_exists($this->parent, 'input'))
-					? $this->parent->input
-					: _env('input')
-			);
+			$this->input = $app->forge('Input', $this->parent ? $this->parent->input() : _env('input'));
 		}
 	}
 
@@ -47,7 +43,7 @@ class Fuel extends \Classes\Request\Base
 	{
 		$this->activate();
 
-		$this->response = $this->app->forge('Response', 'Test');
+		$this->response = $this->app->forge('Response', 'URI: '.$this->request_uri);
 
 		$this->deactivate();
 		return $this;

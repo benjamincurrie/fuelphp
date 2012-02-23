@@ -28,3 +28,11 @@ $app = Application::load('app', function() {});
  * Run the app and output the response
  */
 echo $app->request(_env('input')->uri())->execute()->response()->send_headers();
+
+?>
+
+<p>
+	<strong>Time elapsed:</strong> <?php echo round(_env()->time_elapsed(), 5); ?> s<br />
+	<strong>Memory usage:</strong> <?php echo round(_env()->mem_usage() / 1000000, 4); ?> MB<br />
+	<strong>Peak memory usage:</strong> <?php echo round(_env()->mem_usage(true) / 1000000, 4); ?> MB
+</p>

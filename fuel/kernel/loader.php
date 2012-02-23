@@ -5,6 +5,7 @@ _env()->add_path('kernel', __DIR__, true);
 
 // Add some Kernel classes to the global DiC
 _env('dic')->set_classes(array(
+	'Config'    => 'Fuel\\Kernel\\Data\\Config',
 	'Package'   => 'Fuel\\Kernel\\Loader\\Package',
 	'Request'   => 'Fuel\\Kernel\\Request\\Fuel',
 	'Response'  => 'Fuel\\Kernel\\Response\\Base',

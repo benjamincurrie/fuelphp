@@ -31,6 +31,11 @@ abstract class Base
 	protected $loader;
 
 	/**
+	 * @var  \Fuel\Kernel\Data\Config
+	 */
+	protected $config;
+
+	/**
 	 * @var  array  route objects
 	 */
 	protected $routes = array();
@@ -78,6 +83,9 @@ abstract class Base
 
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
+
+		// Load main Application config
+		$this->config = $this->forge('Config')->load('config.php');
 
 		// Add the routes
 		$this->router();

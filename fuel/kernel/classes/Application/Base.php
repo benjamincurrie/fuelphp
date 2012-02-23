@@ -78,6 +78,9 @@ abstract class Base
 
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
+
+		// Add the routes
+		$this->router();
 	}
 
 	/**
@@ -100,11 +103,12 @@ abstract class Base
 		}
 		elseif (is_array($route))
 		{
-			$this->routes[$name] = $this->forge('Route', $route);
+			array_unshift('Route', $route);
+			$this->routes[$name] = call_user_func_array(array($this, 'forge'), $route);
 		}
 		else
 		{
-			$this->routes[$name] = $this->forge('Route', array($name, $route));
+			$this->routes[$name] = $this->forge('Route', $name, $route);
 		}
 		return $this->routes[$name];
 	}
@@ -138,6 +142,34 @@ abstract class Base
 			throw new \RuntimeException('Requesting an unregistered route.');
 		}
 		return $this->routes[$name];
+	}
+
+	/**
+	 * Attempts to route a given URI to a controller (class, Closure or callback)
+	 *
+	 * @param  string  $uri
+	 */
+	public function process_route($uri)
+	{
+		empty($uri) and $uri = '_root_';
+
+		// Attempt other routes
+		foreach ($this->routes as $route)
+		{
+			if ($route->matches($uri))
+			{
+				return $route->match();
+			}
+		}
+
+		// If not found create a Fuel route
+		$route = $this->forge('Route', $uri);
+		if ($route->matches($uri))
+		{
+			return $route->match();
+		}
+
+		throw new Request\Exception_404($uri);
 	}
 
 	/**

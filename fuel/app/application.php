@@ -7,6 +7,6 @@ class App extends Application\Base
 {
 	public function router()
 	{
-		$this->add_route('_home_', 'welcome');
+		$this->add_route('_root_', 'welcome');
 	}
 }

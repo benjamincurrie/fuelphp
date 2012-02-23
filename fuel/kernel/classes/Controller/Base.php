@@ -2,6 +2,7 @@
 
 namespace Fuel\Kernel\Controller;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\Request;
 use Fuel\Kernel\Response;
 
 abstract class Base
@@ -33,8 +34,7 @@ abstract class Base
 	 */
 	public function _set_app(Application\Base $app)
 	{
-		$this->app     = $app;
-		$this->loader  = $app->loader;
+		$this->app = $app;
 	}
 
 	public function router(array $args)
@@ -45,7 +45,7 @@ abstract class Base
 		// Return false if it doesn't exist
 		if ( ! method_exists($this, $method))
 		{
-			return false;
+			throw new Request\Exception_404('No such action "'.$method.'" in Controller: '.get_class($this));
 		}
 
 		/**
@@ -54,7 +54,7 @@ abstract class Base
 		$method = new \ReflectionMethod($this, $method);
 		if ( ! $method->isPublic())
 		{
-			return false;
+			throw new Request\Exception_404('Unavailable action "'.$method.'" in Controller: '.get_class($this));
 		}
 
 		$this->before();
@@ -79,7 +79,7 @@ abstract class Base
 	{
 		if ( ! $response instanceof Response\Base)
 		{
-			$this->app->forge('Response', $response);
+			$response = $this->app->forge('Response', $response);
 		}
 
 		return $response;

@@ -35,9 +35,9 @@ abstract class Base
 	abstract public function matches($uri);
 
 	/**
-	 * Return a callable to be the controller
+	 * Return an array with 1. callable to be the controller and 2. additional params array
 	 *
-	 * @return  callable
+	 * @return  array(callback, params)
 	 */
 	abstract public function match();
 }

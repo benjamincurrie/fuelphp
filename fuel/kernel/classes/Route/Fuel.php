@@ -20,7 +20,7 @@ class Fuel extends Base
 	protected $translation = '';
 
 	/**
-	 * @var  callable  something callable that matched
+	 * @var  callback  something callable that matched
 	 */
 	protected $match;
 
@@ -31,8 +31,8 @@ class Fuel extends Base
 
 	public function __construct($search, $translation = null, array $methods = array())
 	{
-		$this->search       = trim($search, ' /');
-		$this->methods      = $methods;
+		$this->search   = $search;
+		$this->methods  = $methods;
 
 		// The search uri may start with allowed methods 'DELETE ' or multiple 'GET|POST|PUT '
 		if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
@@ -89,7 +89,7 @@ class Fuel extends Base
 		// Return Controller when found
 		if (is_string($this->translation) and ($controller = $this->find_controller($this->translation)))
 		{
-			$this->translation = array(new $controller(), 'router');
+			$this->match = array($this->app->forge($controller), 'router');
 			return true;
 		}
 
@@ -117,9 +117,9 @@ class Fuel extends Base
 	}
 
 	/**
-	 * Returns the controller callable and segments that were left after parsing
+	 * Return an array with 1. callable to be the controller and 2. additional params array
 	 *
-	 * @return  callable
+	 * @return  array(callback, params)
 	 */
 	public function match()
 	{

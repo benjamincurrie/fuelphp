@@ -2,6 +2,7 @@
 
 namespace Fuel\Kernel\Request;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\Response;
 
 class Fuel extends \Classes\Request\Base
 {
@@ -10,9 +11,19 @@ class Fuel extends \Classes\Request\Base
 	 */
 	protected $request_uri = '';
 
+	/**
+	 * @var  callback
+	 */
+	protected $controller;
+
+	/**
+	 * @var  array
+	 */
+	protected $controller_params = array();
+
 	public function __construct($uri = '', array $input = array())
 	{
-		$this->request_uri  = (string) $uri;
+		$this->request_uri  = trim((string) $uri, '/');
 		$this->input        = $input ?: _env('input');
 	}
 
@@ -43,7 +54,18 @@ class Fuel extends \Classes\Request\Base
 	{
 		$this->activate();
 
-		$this->response = $this->app->forge('Response', 'URI: '.$this->request_uri);
+		list($this->controller, $this->controller_params) = $this->app->process_route($this->request_uri);
+
+		if ( ! is_callable($this->controller))
+		{
+			throw new \DomainException('The Controller returned by routing is not callable.');
+		}
+
+		$this->response = call_user_func($this->controller, $this->controller_params);
+		if ( ! $this->response instanceof Response\Responsible)
+		{
+			throw new \DomainException('Result from a Controller must implement the Responsible interface.');
+		}
 
 		$this->deactivate();
 		return $this;

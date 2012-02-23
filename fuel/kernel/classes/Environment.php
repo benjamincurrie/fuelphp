@@ -491,7 +491,7 @@ class Environment
 	 */
 	public function forge($class)
 	{
-		return $this->dic->forge($class);
+		return call_user_func_array(array($this->dic, 'forge'), func_get_args());
 	}
 
 	/**

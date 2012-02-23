@@ -23,12 +23,12 @@ abstract class Base
 	/**
 	 * @var  \Fuel\Kernel\Application\Base  app that created this request
 	 */
-	public $app;
+	protected $app;
 
 	/**
 	 * @var  \Fuel\Kernel\Response\Responsible  Response after execution
 	 */
-	public $response;
+	protected $response;
 
 	/**
 	 * Magic Fuel method that is the setter for the current app
@@ -102,6 +102,8 @@ abstract class Base
 	 * Execute the request
 	 *
 	 * Must use $this->activate() as the first statement and $this->deactivate() as the last one
+	 *
+	 * @return  Base
 	 */
 	abstract public function execute();
 
@@ -111,5 +113,22 @@ abstract class Base
 	public function response()
 	{
 		return $this->response;
+	}
+
+	/**
+	 * Make the protected variables publicly available
+	 *
+	 * @param   string  $name
+	 * @return  mixed
+	 * @throws  \OutOfBoundsException
+	 */
+	public function __get($name)
+	{
+		if ( ! property_exists($this, $name))
+		{
+			throw new \OutOfBoundsException('Request has no such property.');
+		}
+
+		return $this->{$name};
 	}
 }

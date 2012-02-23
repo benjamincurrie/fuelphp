@@ -94,7 +94,7 @@ class Base implements Dependable
 
 		$args        = array_slice(func_get_args(), 1);
 		$reflection  = new \ReflectionClass($classname);
-		$instance    = $args ? $reflection->newInstanceArgs() : $reflection->newInstance();
+		$instance    = $args ? $reflection->newInstanceArgs($args) : $reflection->newInstance();
 
 		// Setter support for the instance to know which app created it
 		if ($reflection->hasMethod('_set_app'))

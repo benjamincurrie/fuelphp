@@ -50,11 +50,6 @@ abstract class Base
 	protected $_before_activate;
 
 	/**
-	 * @var  \Fuel\Kernel\Response\Responsible  contains the response object after execution
-	 */
-	protected $response;
-
-	/**
 	 * @var  \Fuel\Kernel\DiC\Dependable
 	 */
 	protected $dic;
@@ -135,7 +130,7 @@ abstract class Base
 	 */
 	public function response()
 	{
-		return $this->response->send_headers();
+		return $this->request->response();
 	}
 
 	/**
@@ -241,7 +236,7 @@ abstract class Base
 	 */
 	public function forge($class)
 	{
-		return $this->dic->forge($class);
+		return call_user_func_array(array($this->dic, 'forge'), func_get_args());
 	}
 
 	/**

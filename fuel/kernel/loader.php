@@ -8,6 +8,7 @@ _env('dic')->set_classes(array(
 	'Package'   => 'Fuel\\Kernel\\Loader\\Package',
 	'Request'   => 'Fuel\\Kernel\\Request\\Fuel',
 	'Response'  => 'Fuel\\Kernel\\Response\\Base',
+	'Route'     => 'Fuel\\Kernel\\Route\\Fuel',
 ));
 
 // Forge & return the Kernel Package object
@@ -33,6 +34,9 @@ return _forge('Package')
 		'Classes\\Request\\Fuel'  => 'Fuel\\Kernel\\Request\\Fuel',
 
 		'Classes\\Response\\Base'  => 'Fuel\\Kernel\\Response\\Base',
+
+		'Classes\\Router\\Base'  => 'Fuel\\Kernel\\Router\\Base',
+		'Classes\\Router\\Fuel'  => 'Fuel\\Kernel\\Router\\Fuel',
 
 		'Classes\\View\\Base'  => 'Fuel\\Kernel\\View\\Base',
 	));

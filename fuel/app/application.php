@@ -1,14 +1,12 @@
 <?php
 
 use Classes\Application;
-use Classes\Router;
+use Classes\Route;
 
 class App extends Application\Base
 {
-	public function router(Router $router)
+	public function router()
 	{
-		$router->add('/', 'welcome/index', 'homepage');
-		// $router->add('GET /some/path', 'some/path/get');
-		// $router->add('POST /some/path', 'some/path/post');
+		$this->add_route('_home_', 'welcome');
 	}
 }

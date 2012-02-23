@@ -4,6 +4,7 @@ namespace Fuel\Kernel\Application;
 use Fuel\Kernel\DiC;
 use Fuel\Kernel\Loader;
 use Fuel\Kernel\Request;
+use Fuel\Kernel\Route;
 
 abstract class Base
 {
@@ -28,6 +29,11 @@ abstract class Base
 	 * @var  \Fuel\Kernel\Loader\Loadable  the Application's own loader instance
 	 */
 	protected $loader;
+
+	/**
+	 * @var  array  route objects
+	 */
+	protected $routes = array();
 
 	/**
 	 * @var  array  packages to load
@@ -72,6 +78,66 @@ abstract class Base
 
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
+	}
+
+	/**
+	 * Define the routes for this application
+	 */
+	abstract public function router();
+
+	/**
+	 * Add a route to the Application
+	 *
+	 * @param   string        $name
+	 * @param   string|array  $translation
+	 * @return  \Fuel\Kernel\Route\Base
+	 */
+	public function add_route($name, $route)
+	{
+		if ($route instanceof Route\Base)
+		{
+			$this->routes[$name] = $route;
+		}
+		elseif (is_array($route))
+		{
+			$this->routes[$name] = $this->forge('Route', $route);
+		}
+		else
+		{
+			$this->routes[$name] = $this->forge('Route', array($name, $route));
+		}
+		return $this->routes[$name];
+	}
+
+	/**
+	 * Add multiple routes
+	 *
+	 * @param   array  $routes
+	 * @return  Base
+	 */
+	public function add_routes(array $routes)
+	{
+		foreach ($routes as $name => $route)
+		{
+			$this->add_route($name, $route);
+		}
+		return $this;
+	}
+
+	/**
+	 * Allow for reverse routing
+	 *
+	 * @param   string  $name
+	 * @return  \Fuel\Kernel\Route\Base
+	 * @throws  \RuntimeException
+	 */
+	public function get_route($name)
+	{
+		if ( ! isset($this->routes[$name]))
+		{
+			throw new \RuntimeException('Requesting an unregistered route.');
+		}
+		return $this->routes[$name];
 	}
 
 	/**

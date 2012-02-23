@@ -51,6 +51,12 @@ namespace Classes\Response
 	class Base extends \Fuel\Kernel\Response\Base {}
 }
 
+namespace Classes\Route
+{
+	abstract class Base extends \Fuel\Kernel\Route\Base {}
+	class Fuel extends \Fuel\Kernel\Route\Fuel {}
+}
+
 namespace Classes\View
 {
 	class View extends \Fuel\Kernel\View\Base {}

@@ -2,7 +2,19 @@
 
 namespace Fuel\Core;
 
-abstract class Legacy
+// As abstract static functions are forbidden:
+interface Legacy_Interface
+{
+	/**
+	 * Fetches an instance for this front
+	 *
+	 * @param   string  $name
+	 * @return  object
+	 */
+	public static function instance();
+}
+
+abstract class Legacy implements Legacy_Interface
 {
 	/**
 	 * @var  string  (required) Overwrite for the classname this front represents
@@ -13,14 +25,6 @@ abstract class Legacy
 	 * @var  array  Maps specific method names to callbacks for legacy support
 	 */
 	// protected static $method_mapping = array();
-
-	/**
-	 * Fetches an instance for this front
-	 *
-	 * @param   string  $name
-	 * @return  object
-	 */
-	abstract public static function instance();
 
 	/**
 	 * Support for usage of all dynamic methods on the driver

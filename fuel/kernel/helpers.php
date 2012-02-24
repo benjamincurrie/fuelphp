@@ -115,11 +115,11 @@ function array_set_dot_key($key, &$input, $setting)
  */
 function array_get_dot_key($key, &$input, &$return)
 {
-	$return =& $input;
+	$return = $input;
 
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
-	while (count($keys) > 1)
+	while (count($keys) >= 1)
 	{
 		$key = array_shift($keys);
 		if ( ! isset($return[$key])
@@ -128,7 +128,7 @@ function array_get_dot_key($key, &$input, &$return)
 			// Value not found, return failure
 			return false;
 		}
-		$return =& $return[$key];
+		$return = $return[$key];
 	}
 
 	// return success

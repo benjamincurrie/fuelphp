@@ -340,7 +340,11 @@ class Input
 	 */
 	public function query_string($index = null, $default = null)
 	{
-		if ( ! array_get_dot_key($index, $this->uri_vars, $return))
+		if (is_null($index) and func_num_args() === 0)
+		{
+			return $this->uri_vars;
+		}
+		elseif ( ! array_get_dot_key($index, $this->uri_vars, $return))
 		{
 			return $this->parent ? $this->parent->query_string($index, $default) : $default;
 		}
@@ -357,7 +361,11 @@ class Input
 	 */
 	public function param($index = null, $default = null)
 	{
-		if ( ! array_get_dot_key($index, $this->input_vars, $return))
+		if (is_null($index) and func_num_args() === 0)
+		{
+			return $this->input_vars;
+		}
+		elseif ( ! array_get_dot_key($index, $this->input_vars, $return))
 		{
 			return $this->parent ? $this->parent->param($index, $default) : $default;
 		}
@@ -403,6 +411,7 @@ class Input
 		{
 			return $this->parent ? $this->parent->server($index, $default) : $default;
 		}
+			var_dump($index, $return, $this->server_vars); echo '<hr />';
 
 		return $return;
 	}

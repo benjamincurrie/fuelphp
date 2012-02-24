@@ -17,8 +17,13 @@ abstract class Front
 	public static function forge()
 	{
 		$args = func_get_args();
+		$name = array_shift($args);
 		array_unshift($args, static::$classname);
-		return call_user_func_array(array(_env(), 'forge'), $args);
+
+		$obj = call_user_func_array(array(_env(), 'forge'), $args);
+		_env()->set_object(static::$classname, $name, $obj);
+
+		return $obj;
 	}
 
 	/**
@@ -27,27 +32,9 @@ abstract class Front
 	 * @param   string  $name
 	 * @return  object
 	 */
-	public static function instance($name = 'default')
+	public static function instance($name = null)
 	{
-		try
-		{
-			$class = static::$classname;
-			$object = _env()->get_object($class, $name);
-		}
-		catch (\RuntimeException $e)
-		{
-			if ($name == 'default')
-			{
-				$object = _env()->forge($class);
-				_env('dic')->set_object($class, $object);
-			}
-			else
-			{
-				throw $e;
-			}
-		}
-
-		return $object;
+		return _env()->get_object(static::$classname, $name);
 	}
 
 	/**

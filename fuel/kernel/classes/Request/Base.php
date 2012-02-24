@@ -23,17 +23,17 @@ abstract class Base
 	/**
 	 * @var  \Fuel\Kernel\Application\Base  app that created this request
 	 */
-	protected $app;
+	public $app;
 
 	/**
 	 * @var  \Fuel\Kernel\Input
 	 */
-	protected $input;
+	public $input;
 
 	/**
 	 * @var  \Fuel\Kernel\Response\Responsible  Response after execution
 	 */
-	protected $response;
+	public $response;
 
 	/**
 	 * Magic Fuel method that is the setter for the current app
@@ -130,22 +130,5 @@ abstract class Base
 	public function response()
 	{
 		return $this->response;
-	}
-
-	/**
-	 * Make the protected variables publicly available
-	 *
-	 * @param   string  $name
-	 * @return  mixed
-	 * @throws  \OutOfBoundsException
-	 */
-	public function __get($name)
-	{
-		if ( ! property_exists($this, $name))
-		{
-			throw new \OutOfBoundsException('Request has no such property.');
-		}
-
-		return $this->{$name};
 	}
 }

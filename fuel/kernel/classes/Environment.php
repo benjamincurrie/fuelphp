@@ -12,7 +12,7 @@ class Environment
 	/**
 	 * @var  Environment  instance
 	 */
-	protected static $instance;
+	public static $instance;
 
 	/**
 	 * Singleton may be evil but to allow multiple instances would be wrong
@@ -37,37 +37,37 @@ class Environment
 	/**
 	 * @var  string  name of the current environment
 	 */
-	protected $name = 'development';
+	public $name = 'development';
 
 	/**
 	 * @var  string|null  optional overwrite for system environment setting
 	 */
-	protected $locale = null;
+	public $locale = null;
 
 	/**
 	 * @var  string  language identifier
 	 */
-	protected $language = 'en';
+	public $language = 'en';
 
 	/**
 	 * @var  string|null  timezone name for php.net/timezones
 	 */
-	protected $timezone = 'UTC';
+	public $timezone = 'UTC';
 
 	/**
 	 * @var  bool  whether or not usage of MBSTRING extension is enabled
 	 */
-	protected $mbstring = true;
+	public $mbstring = true;
 
 	/**
 	 * @var  string|null  character encoding
 	 */
-	protected $encoding = 'UTF-8';
+	public $encoding = 'UTF-8';
 
 	/**
 	 * @var  bool  whether this is run through the command line
 	 */
-	protected $is_cli = false;
+	public $is_cli = false;
 
 	/**
 	 * @var  array  appnames and their classnames
@@ -82,32 +82,32 @@ class Environment
 	/**
 	 * @var  string  base url
 	 */
-	protected $base_url;
+	public $base_url;
 
 	/**
 	 * @var  string
 	 */
-	protected $index_file;
+	public $index_file;
 
 	/**
 	 * @var  Input  the input container
 	 */
-	protected $input;
+	public $input;
 
 	/**
 	 * @var  Loader  the loader container
 	 */
-	protected $loader;
+	public $loader;
 
 	/**
 	 * @var  DiC\Base
 	 */
-	protected $dic;
+	public $dic;
 
 	/**
 	 * @var  Application\Base;
 	 */
-	protected $active_app;
+	public $active_app;
 
 	/**
 	 * @var  array  container for environment variables
@@ -505,22 +505,5 @@ class Environment
 	public function get_object($class, $name = null)
 	{
 		return $this->dic->get_object($class, $name);
-	}
-
-	/**
-	 * Make the protected variables publicly available
-	 *
-	 * @param   string  $name
-	 * @return  mixed
-	 * @throws  \OutOfBoundsException
-	 */
-	public function __get($name)
-	{
-		if ( ! property_exists($this, $name))
-		{
-			throw new \OutOfBoundsException('Fuel Environment has no such property.');
-		}
-
-		return $this->{$name};
 	}
 }

@@ -9,17 +9,17 @@ class Fuel extends \Classes\Request\Base
 	/**
 	 * @var  string
 	 */
-	protected $request_uri = '';
+	public $request_uri = '';
 
 	/**
 	 * @var  callback
 	 */
-	protected $controller;
+	public $controller;
 
 	/**
 	 * @var  array
 	 */
-	protected $controller_params = array();
+	public $controller_params = array();
 
 	public function __construct($uri = '', array $input = array())
 	{

@@ -28,17 +28,17 @@ abstract class Base
 	/**
 	 * @var  \Fuel\Kernel\Loader\Loadable  the Application's own loader instance
 	 */
-	protected $loader;
+	public $loader;
 
 	/**
 	 * @var  \Fuel\Kernel\Data\Config
 	 */
-	protected $config;
+	public $config;
 
 	/**
 	 * @var  \Fuel\Kernel\Data\Language
 	 */
-	protected $language;
+	public $language;
 
 	/**
 	 * @var  array  route objects
@@ -53,7 +53,7 @@ abstract class Base
 	/**
 	 * @var  \Fuel\Kernel\Request\Base  contains the app main request object once created
 	 */
-	protected $request;
+	public $request;
 
 	/**
 	 * @var  \Fuel\Kernel\Request\Base  current active Request, not necessarily the main request
@@ -68,7 +68,7 @@ abstract class Base
 	/**
 	 * @var  \Fuel\Kernel\DiC\Dependable
 	 */
-	protected $dic;
+	public $dic;
 
 	public function __construct(\Closure $config, Loader\Loadable $loader)
 	{
@@ -381,22 +381,5 @@ abstract class Base
 	public function active_request()
 	{
 		return $this->active_request;
-	}
-
-	/**
-	 * Make the protected variables publicly available
-	 *
-	 * @param   string  $name
-	 * @return  mixed
-	 * @throws  \OutOfBoundsException
-	 */
-	public function __get($name)
-	{
-		if ( ! property_exists($this, $name))
-		{
-			throw new \OutOfBoundsException('Application has no such property.');
-		}
-
-		return $this->{$name};
 	}
 }

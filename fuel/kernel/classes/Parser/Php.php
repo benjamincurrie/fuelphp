@@ -18,7 +18,7 @@ class Php implements Parsable
 	 * Parses a file using the given variables
 	 *
 	 * @param   string  $path
-	 * @param   array   $vars
+	 * @param   array   $data
 	 * @return  string
 	 */
 	public function parse_file($path, array $data = array())
@@ -54,7 +54,7 @@ class Php implements Parsable
 	 * Parses a given string using the given variables
 	 *
 	 * @param   string  $string
-	 * @param   array   $vars
+	 * @param   array   $data
 	 * @return  string
 	 */
 	public function parse_string($template, array $data = array())

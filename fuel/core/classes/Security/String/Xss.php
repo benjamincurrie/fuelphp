@@ -10,7 +10,7 @@ class Xss extends String\Base
 	{
 		if ( ! function_exists('htmLawed'))
 		{
-			require _env()->path('core').'vendor/htmlawed/htmlawed.php';
+			require _env()->path('core').'vendor/htmlawed/htmLawed.php';
 		}
 
 		return htmLawed($input, array('safe' => 1, 'balanced' => 0));

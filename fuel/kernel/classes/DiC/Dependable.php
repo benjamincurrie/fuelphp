@@ -60,5 +60,5 @@ interface Dependable
 	 * @param   string  $name
 	 * @return  object
 	 */
-	public function get_object($classname, $name);
+	public function get_object($classname, $name = null);
 }

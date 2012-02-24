@@ -36,6 +36,11 @@ abstract class Base
 	protected $config;
 
 	/**
+	 * @var  \Fuel\Kernel\Data\Language
+	 */
+	protected $language;
+
+	/**
 	 * @var  array  route objects
 	 */
 	protected $routes = array();
@@ -86,6 +91,9 @@ abstract class Base
 
 		// Load main Application config
 		$this->config = $this->forge('Config')->load('config.php');
+
+		// Add main Application language
+		$this->language = $this->forge('Language');
 
 		// Add the routes
 		$this->router();
@@ -353,9 +361,9 @@ abstract class Base
 	 * @return  object
 	 * @throws  \RuntimeException
 	 */
-	protected function get_object($class, $name)
+	public function get_object($class, $name = null)
 	{
-		$this->get_object($class, $name);
+		return $this->dic->get_object($class, $name);
 	}
 
 	/**

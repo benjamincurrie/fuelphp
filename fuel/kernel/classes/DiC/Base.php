@@ -127,14 +127,22 @@ class Base implements Dependable
 	 * @return  object
 	 * @throws  \RuntimeException
 	 */
-	public function get_object($classname, $name)
+	public function get_object($classname, $name = null)
 	{
 		$classname = strtolower($classname);
-		$name = strtolower($name);
+		$name = is_null($name) ? '__default' : strtolower($name);
 		if ( ! isset($this->objects[$classname][$name]))
 		{
 			if ( ! $this->parent)
 			{
+				// Return 'default' instance when no name is given, is forged without params
+				if ($name == '__default')
+				{
+					$default = $this->forge($classname);
+					$this->set_object($classname, $name, $default);
+					return $this->objects[$classname][$name];
+				}
+
 				throw new \RuntimeException('Instance "'.$name.'" not found for class "'.$classname.'".');
 			}
 			return $this->parent->get_object($classname, $name);

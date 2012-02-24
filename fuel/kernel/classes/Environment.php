@@ -502,9 +502,9 @@ class Environment
 	 * @return  object
 	 * @throws  \RuntimeException
 	 */
-	protected function get_object($class, $name)
+	public function get_object($class, $name = null)
 	{
-		$this->get_object($class, $name);
+		return $this->dic->get_object($class, $name);
 	}
 
 	/**

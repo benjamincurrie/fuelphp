@@ -135,19 +135,28 @@ class Base implements Viewable
 	 */
 	public function __toString()
 	{
-		// First make sure the Request that created this is active
-		$context_activated = false;
+		// First make sure the Application that created this is active
+		$app_activated = false;
+		if (_app() !== $this->_context->app)
+		{
+			$this->_context->app->activate();
+			$app_activated = true;
+		}
+
+		// Then make sure the Request that created this is active
+		$request_activated = false;
 		if (_app()->active_request() !== $this->_context)
 		{
 			$this->_context->activate();
-			$context_activated = true;
+			$request_activated = true;
 		}
 
-		// Execute t
+		// Render the View
 		$view = $this->render();
 
-		// When a request was activated, deactivate now we're done
-		$context_activated and $this->_context->deactivate();
+		// When Request/Application was activated, deactivate now we're done
+		$request_activated and $this->_context->deactivate();
+		$app_activated and $this->_context->app->deactivate();
 
 		return $view;
 	}

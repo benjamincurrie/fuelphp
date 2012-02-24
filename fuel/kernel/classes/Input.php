@@ -411,7 +411,6 @@ class Input
 		{
 			return $this->parent ? $this->parent->server($index, $default) : $default;
 		}
-			var_dump($index, $return, $this->server_vars); echo '<hr />';
 
 		return $return;
 	}

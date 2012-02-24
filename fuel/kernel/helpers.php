@@ -82,26 +82,24 @@ function _forge()
  */
 function array_set_dot_key($key, &$input, $setting)
 {
-	$data =& $input;
-
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
-	while (count($keys) > 1)
+	while (count($keys) > 0)
 	{
 		$key = array_shift($keys);
-		if ( ! isset($data[$key])
-			or ( ! is_array($data[$key]) and ! $data[$key] instanceof \ArrayAccess))
+		if ( ! isset($input[$key])
+			or ( ! empty($keys) and ! is_array($input[$key]) and ! $input[$key] instanceof \ArrayAccess))
 		{
 			// Create new subarray or overwrite non array
-			$data[$key] = array();
+			$input[$key] = array();
 		}
-		$data =& $data[$key];
+		$input =& $input[$key];
 	}
 
 	// Set when this is a set operation
 	if ( ! is_null($setting))
 	{
-		$data = $setting;
+		$input = $setting;
 	}
 }
 
@@ -115,22 +113,21 @@ function array_set_dot_key($key, &$input, $setting)
  */
 function array_get_dot_key($key, &$input, &$return)
 {
-	$return = $input;
-
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
-	while (count($keys) >= 1)
+	while (count($keys) > 0)
 	{
 		$key = array_shift($keys);
-		if ( ! isset($return[$key])
-			or ( ! is_array($return[$key]) and ! $return[$key] instanceof \ArrayAccess))
+		if ( ! isset($input[$key])
+			or ( ! empty($keys) and ! is_array($input[$key]) and ! $input[$key] instanceof \ArrayAccess))
 		{
 			// Value not found, return failure
 			return false;
 		}
-		$return = $return[$key];
+		$input =& $input[$key];
 	}
 
 	// return success
+	$return = $input;
 	return true;
 }

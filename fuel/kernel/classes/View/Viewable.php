@@ -17,7 +17,7 @@ interface Viewable
 	 *
 	 * @param  $name
 	 */
-	public function __get($name);
+	public function & __get($name);
 
 	/**
 	 * The Viewable must be able to turn into a string

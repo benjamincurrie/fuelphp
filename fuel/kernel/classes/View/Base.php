@@ -6,9 +6,24 @@ use Fuel\Kernel\Application;
 class Base implements Viewable
 {
 	/**
+	 * @var  null|string  path to the View file
+	 */
+	protected $_path;
+
+	/**
+	 * @var  null|string  raw template to use as View
+	 */
+	protected $_template;
+
+	/**
 	 * @var  array  data to be passed to the view
 	 */
 	protected $_data = array();
+
+	/**
+	 * @var  \Fuel\Kernel\Parser\Parsable
+	 */
+	protected $_parser;
 
 	/**
 	 * @var  \Fuel\Kernel\Application\Base
@@ -20,6 +35,12 @@ class Base implements Viewable
 	 */
 	protected $_context;
 
+	public function __construct($file = null, array $data = array())
+	{
+		$this->_path = $file;
+		$this->_data = $data;
+	}
+
 	/**
 	 * Magic Fuel method that is the setter for the current app
 	 *
@@ -27,8 +48,38 @@ class Base implements Viewable
 	 */
 	public function _set_app(Application\Base $app)
 	{
-		$this->_app = $app;
-		$this->_context = $app->active_request();
+		$this->_app      = $app;
+		$this->_context  = $app->active_request();
+		$this->_parser   = $app->get_object('Parser');
+
+		// Fetch the full path from the Application
+		$this->_path and $this->set_filename($this->_path);
+	}
+
+	/**
+	 * Change the View filename
+	 *
+	 * @param   string  $file
+	 * @return  Base
+	 */
+	public function set_filename($file)
+	{
+		$this->_path      = $this->_app->find_file('views', $file.'.'.$this->_parser->extension());
+		$this->_template  = null;
+		return $this;
+	}
+
+	/**
+	 * Change the View template string
+	 *
+	 * @param   string  $template
+	 * @return  Base
+	 */
+	public function set_template($template)
+	{
+		$this->_path      = null;
+		$this->_template  = $template;
+		return $this;
 	}
 
 	/**
@@ -72,6 +123,8 @@ class Base implements Viewable
 	 */
 	public function __toString()
 	{
-		return 'not yet implmented';
+		return $this->_path
+			? $this->_parser->parse_file($this->_path, $this->_data)
+			: $this->_parser->parse_string($this->_template, $this->_data);
 	}
 }

@@ -385,4 +385,21 @@ abstract class Base
 	{
 		return $this->active_request;
 	}
+
+	/**
+	 * Make the protected variables publicly available
+	 *
+	 * @param   string  $name
+	 * @return  mixed
+	 * @throws  \OutOfBoundsException
+	 */
+	public function __get($name)
+	{
+		if ( ! property_exists($this, $name))
+		{
+			throw new \OutOfBoundsException('Application has no such property.');
+		}
+
+		return $this->{$name};
+	}
 }

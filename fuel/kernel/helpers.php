@@ -3,6 +3,7 @@
 /**
  * Fetch the Fuel Environment
  *
+ * @param   null|string  $var
  * @return  mixed
  */
 function _env($var = null)
@@ -13,6 +14,43 @@ function _env($var = null)
 	}
 
 	return Fuel\Kernel\Environment::instance();
+}
+
+/**
+ * Return the current active Application
+ *
+ * @param   null|string  $var
+ * @return  mixed
+ */
+function _app($var = null)
+{
+	$app = _env()->active_app();
+
+	if ( ! $app)
+	{
+		return null;
+	}
+
+	return $var ? $app->{$var} : $app;
+}
+
+
+/**
+ * Return the current active Request
+ *
+ * @param   null|string  $var
+ * @return  mixed
+ */
+function _req($var = null)
+{
+	$req = ($app = _app()) ? $app->active_request() : null;
+
+	if ( ! $req)
+	{
+		return null;
+	}
+
+	return $var ? $req->{$var} : $req;
 }
 
 /**
@@ -32,7 +70,7 @@ function _loader()
  */
 function _forge()
 {
-	return call_user_func_array(array(_env(), 'forge'), func_get_args());
+	return call_user_func_array(array(_app() ?: _env(), 'forge'), func_get_args());
 }
 
 /**

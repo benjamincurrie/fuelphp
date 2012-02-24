@@ -3,6 +3,7 @@
 // Add some Core classes to the global DiC
 _env('dic')->set_classes(array(
 	'Request_Curl'   => 'Fuel\\Core\\Request\\Curl',
+	'Security_Xss'   => 'Fuel\\Core\\Security\\String\\Xss',
 	'View_Markdown'  => 'Fuel\\Core\\View\\Markdown',
 	'View_Twig'      => 'Fuel\\Core\\View\\Twig',
 ));

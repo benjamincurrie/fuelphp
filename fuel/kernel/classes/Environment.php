@@ -285,7 +285,7 @@ class Environment
 	 *
 	 * @return  string  the base url
 	 */
-	protected function detect_base_url()
+	public function detect_base_url()
 	{
 		$base_url = '';
 		if ($this->input->server('http_host'))

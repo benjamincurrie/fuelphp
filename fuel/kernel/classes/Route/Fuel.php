@@ -38,7 +38,9 @@ class Fuel extends Base
 		if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
 		{
 			$this->search   = ltrim(substr($this->search, strlen($matches[0])), ' /');
-			$this->methods  = explode('|', trim($matches[0]));
+			$this->methods  = array_unique(
+				array_merge($this->methods, explode('|', trim($matches[0])))
+			);
 		}
 
 		$this->translation  = is_null($translation) ? $this->search : $translation;

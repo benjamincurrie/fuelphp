@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" stopOnFailure="false" bootstrap="bootstrap_phpunit.php">
+	<php>
+		<server name="doc_root" value="../public"/>
+		<server name="app_path" value="app"/>
+		<server name="core_path" value="core"/>
+		<server name="kernel_path" value="kernel"/>
+	</php>
+	<testsuites>
+		<testsuite name="kernel">
+			<directory suffix=".php">kernel/tests</directory>
+		</testsuite>
+		<testsuite name="core">
+			<directory suffix=".php">core/tests</directory>
+		</testsuite>
+		<testsuite name="app">
+			<directory suffix=".php">app/tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

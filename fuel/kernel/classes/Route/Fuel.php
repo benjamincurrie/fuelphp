@@ -63,18 +63,24 @@ class Fuel extends Base
 			$translation = call_user_func($this->search, $uri, $this->app, $this->request);
 			$translation === true and $translation = $this->translation;
 
-			// When empty report failure
-			if ( ! $translation)
+			if ($translation)
 			{
-				return false;
+				$this->parse($translation);
+				return true;
 			}
 		}
-		elseif ( ! ($translation = preg_replace('#^'.$this->search.'$#uD', $this->translation, $uri, -1, $count)))
+		elseif (is_string($this->search))
 		{
-			return false;
+			$translation = preg_replace('#^'.$this->search.'$#uD', $this->translation, $uri, -1, $count);
+			if ($count)
+			{
+				$this->parse($translation);
+				return true;
+			}
 		}
 
-		return $this->parse($translation);
+		// Failure...
+		return false;
 	}
 
 	/**
@@ -116,7 +122,7 @@ class Fuel extends Base
 			{
 				return $controller;
 			}
-			$this->segments[] = array_pop($uri_array);
+			array_unshift($this->segments, array_pop($uri_array));
 		}
 		return false;
 	}

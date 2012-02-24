@@ -61,9 +61,9 @@ abstract class Base
 	protected $active_request;
 
 	/**
-	 * @var  Base  active Application before activation of this one
+	 * @var  array  active Application stack before activation of this one
 	 */
-	protected $_before_activate;
+	protected $_before_activate = array();
 
 	/**
 	 * @var  \Fuel\Kernel\DiC\Dependable
@@ -218,7 +218,7 @@ abstract class Base
 	 */
 	public function activate()
 	{
-		$this->_before_activate = _env()->active_app();
+		array_push($this->_before_activate, _env()->active_app());
 		_env()->set_active_app($this);
 		return $this;
 	}
@@ -230,8 +230,7 @@ abstract class Base
 	 */
 	public function deactivate()
 	{
-		_env()->set_active_app($this->_before_activate);
-		$this->_before_activate = null;
+		_env()->set_active_app(array_pop($this->_before_activate));
 		return $this;
 	}
 

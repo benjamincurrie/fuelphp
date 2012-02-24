@@ -16,9 +16,9 @@ abstract class Base
 	protected $descendants = array();
 
 	/**
-	 * @var  Base  active request before activation of this one
+	 * @var  array  active Request stack before activation of this one
 	 */
-	protected $_before_activate;
+	protected $_before_activate = array();
 
 	/**
 	 * @var  \Fuel\Kernel\Application\Base  app that created this request
@@ -59,7 +59,7 @@ abstract class Base
 	 */
 	public function activate()
 	{
-		$this->_before_activate = $this->app->active_request();
+		array_push($this->_before_activate, $this->app->active_request());
 		$this->app->set_active_request($this);
 		return $this;
 	}
@@ -71,8 +71,7 @@ abstract class Base
 	 */
 	public function deactivate()
 	{
-		$this->app->set_active_request($this->_before_activate);
-		$this->_before_activate = null;
+		$this->app->set_active_request(array_pop($this->_before_activate));
 		return $this;
 	}
 

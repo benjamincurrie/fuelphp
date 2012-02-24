@@ -10,21 +10,9 @@ abstract class Front
 	// protected static $classname = '';
 
 	/**
-	 * Forges an object for this front
-	 *
-	 * @return  object
+	 * @var  array  Maps specific method names to callbacks for legacy support
 	 */
-	public static function forge()
-	{
-		$args = func_get_args();
-		$name = array_shift($args);
-		array_unshift($args, static::$classname);
-
-		$obj = call_user_func_array(array(_env(), 'forge'), $args);
-		_env()->set_object(static::$classname, $name, $obj);
-
-		return $obj;
-	}
+	// protected static $method_mapping = array();
 
 	/**
 	 * Fetches an instance for this front
@@ -32,10 +20,7 @@ abstract class Front
 	 * @param   string  $name
 	 * @return  object
 	 */
-	public static function instance($name = null)
-	{
-		return _env()->get_object(static::$classname, $name);
-	}
+	abstract public static function instance();
 
 	/**
 	 * Support for usage of all dynamic methods on the driver
@@ -47,13 +32,29 @@ abstract class Front
 	 */
 	public static function __callStatic($method, array $args)
 	{
-		$self = static::instance();
-		if ( ! is_callable(array($self, $method)))
+		// Allow old method name to map to new one
+		if (isset(static::$method_mapping[$method]))
+		{
+			$callback = static::$method_mapping[$method];
+
+			// When single value in array: add the current instance as the object
+			if (is_array($callback) and count($callback) === 1)
+			{
+				array_unshift($callback, static::instance());
+			}
+		}
+		// Default to same method name
+		else
+		{
+			$callback = array(static::instance(), $method);
+		}
+
+		if ( ! is_callable($callback))
 		{
 			throw new \BadMethodCallException('No such method available on: '.static::$classname);
 		}
 
-		return call_user_func_array(array($self, $method), $args);
+		return call_user_func_array($callback, $args);
 	}
 
 	/**

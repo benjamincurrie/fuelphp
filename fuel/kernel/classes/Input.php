@@ -332,6 +332,23 @@ class Input
 	}
 
 	/**
+	 * Fetch an item from the URI query string
+	 *
+	 * @param   string  $index    The index key
+	 * @param   mixed   $default  The default value
+	 * @return  string|array
+	 */
+	public function query_string($index = null, $default = null)
+	{
+		if ( ! array_get_dot_key($index, $this->uri_vars, $return))
+		{
+			return $this->parent ? $this->parent->query_string($index, $default) : $default;
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Fetch an item from the input
 	 *
 	 * @param   string  $index    The index key

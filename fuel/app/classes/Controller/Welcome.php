@@ -7,15 +7,13 @@ class Welcome extends Classes\Controller\Base
 {
 	public function action_index()
 	{
-		$view = $this->app->forge('View', 'welcome');
-		$view->body = '<p><strong>TEST!</strong></p>';
-		return $view;
+		return '<p><strong>Homepage</strong></p>';
 	}
 
 	public function action_catchall()
 	{
 		$view = $this->app->forge('View', 'welcome');
-		$view->body = '<p><strong>Gevangen: </strong>'.implode('/', func_get_args()).'</p>';
+		$view->body = '<p><strong>Catch-all: </strong>'.implode('/', func_get_args()).'</p>';
 		return $view;
 	}
 }

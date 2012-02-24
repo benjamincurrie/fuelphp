@@ -7,8 +7,10 @@
 
 return array(
 	'__default' => function() {
-		ini_set('display_errors', 'Off');
+		// Switch off error display to allow Fuel to handle them
+		@ini_set('display_errors', 'Off');
 
+		// Return array with environment config
 		return array(
 			'locale'    => null,
 			'language'  => 'en',

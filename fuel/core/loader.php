@@ -7,9 +7,6 @@ _env('dic')->set_classes(array(
 	'View_Twig'      => 'Fuel\\Core\\View\\Twig',
 ));
 
-// Add the Legacy classes as global aliases to allow Fuel 1.x static usage
-_loader()->add_global_ns_alias('Fuel\\Core\\Legacy');
-
 // Forge and return the Core Package object
 return _forge('Package')
 	->set_path(__DIR__)

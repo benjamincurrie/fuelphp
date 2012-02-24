@@ -239,6 +239,45 @@ class Environment
 			$this->mbstring = function_exists('mb_get_info');
 		}
 		$this->set_encoding($this->encoding);
+
+		// Setup Error & Exception handlers
+		register_shutdown_function(function ()
+		{
+			$error = error_get_last();
+
+			if ( ! $error)
+			{
+				return;
+			}
+
+			$error = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
+			if ($handler = _app('error'))
+			{
+				return $handler->handle($error);
+			}
+			exit(nl2br($error));
+		});
+		set_error_handler(function ($severity, $message, $filepath, $line)
+		{
+			$error = new \ErrorException($message, $severity, 0, $filepath, $line);
+			if ($handler = _app('error'))
+			{
+				return $handler->handle($error);
+			}
+			exit(nl2br($error));
+		});
+		set_exception_handler(function (\Exception $e)
+		{
+			if ($handler = _app('error'))
+			{
+				return $handler->handle($e);
+			}
+
+			echo '<h1>Error code: #'.$e->getCode().'</h1>';
+			echo '<p>'.$e->getMessage().'</p>';
+			echo '<p>Occorred in file "'.$e->getFile().'" on line "'.$e->getLine().'".</p>';
+			exit(1);
+		});
 	}
 
 	/**

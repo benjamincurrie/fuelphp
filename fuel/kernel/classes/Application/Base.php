@@ -41,6 +41,11 @@ abstract class Base
 	public $language;
 
 	/**
+	 * @var  \Fuel\Kernel\Error
+	 */
+	public $error;
+
+	/**
 	 * @var  array  route objects
 	 */
 	protected $routes = array();
@@ -88,6 +93,9 @@ abstract class Base
 
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
+
+		// Add the Exception Handler
+		$this->error = $this->forge('Error');
 
 		// Load main Application config
 		$this->config = $this->forge('Config')->load('config.php');

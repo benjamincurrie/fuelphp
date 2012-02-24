@@ -34,32 +34,9 @@ class Error
 	);
 
 	/**
-	 * @var  int  number of errors handled
-	 */
-	public $count = 0;
-
-	/**
 	 * @var  array  Non fatal errors thrown before a fatal error occurred
 	 */
 	public $non_fatal_cache = array();
-
-	/**
-	 * Native PHP shutdown handler
-	 *
-	 * @return  string
-	 */
-	public function shutdown_handler()
-	{
-		$error = error_get_last();
-
-		// Only show valid fatal errors
-		if ($error and in_array($error['type'], $this->fatal_levels))
-		{
-			$error = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
-			$this->show_error($error);
-			exit(1);
-		}
-	}
 
 	/**
 	 * PHP Exception handler
@@ -67,40 +44,13 @@ class Error
 	 * @param   \Exception  $e  the exception
 	 * @return  bool
 	 */
-	public function exception_handler(\Exception $e)
+	public function handle(\Exception $e)
 	{
 		if (method_exists($e, 'handle'))
 		{
 			return $e->handle();
 		}
 		static::show_error($e);
-	}
-
-	/**
-	 * PHP Error handler
-	 *
-	 * @param   int     $severity  the severity code
-	 * @param   string  $message   the error message
-	 * @param   string  $filepath  the path to the file throwing the error
-	 * @param   int     $line      the line number of the error
-	 * @return  bool    whether to continue with execution
-	 */
-	public function error_handler($severity, $message, $filepath, $line)
-	{
-		// Increase error counter
-		$this->count++;
-
-		if ($this->count <= _env()->config->get('errors.throttling', 10))
-		{
-			$this->show_error(new \ErrorException($message, $severity, 0, $filepath, $line));
-		}
-		elseif ($this->count == (_env('config')->get('error_throttling', 10) + 1)
-				and ($severity & error_reporting()) == $severity)
-		{
-			$this->show_error(new \ErrorException('Error throttling threshold was reached, no more full error reports are shown.', E_USER_NOTICE));
-		}
-
-		return true;
 	}
 
 	/**

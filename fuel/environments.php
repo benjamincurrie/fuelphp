@@ -7,7 +7,7 @@
 
 return array(
 	'__default' => function() {
-		ini_set('display_errors', 'On');
+		ini_set('display_errors', 'Off');
 
 		return array(
 			'locale'    => null,

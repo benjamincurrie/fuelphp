@@ -2,33 +2,14 @@
 
 namespace Fuel\Kernel\Presenter;
 use Fuel\Kernel\Application;
+use Fuel\Kernel\View;
 
-abstract class Base
+abstract class Base extends View\Base
 {
-	/**
-	 * @var  string  path of the Viewable
-	 */
-	protected $_view_path = '';
-
-	/**
-	 * @var  \Fuel\Kernel\View\Viewable
-	 */
-	protected $_view;
-
-	/**
-	 * @var  \Fuel\Kernel\Application\Base
-	 */
-	protected $_app;
-
 	/**
 	 * @var  \Fuel\Kernel\Loader\Loadable
 	 */
 	protected $_loader;
-
-	/**
-	 * @var  \Fuel\Kernel\Request\Base
-	 */
-	protected $_context;
 
 	/**
 	 * @var  string|null  method to be run upon the Presenter, nothing will be ran when null
@@ -37,7 +18,7 @@ abstract class Base
 
 	public function __construct()
 	{
-		$this->fetch_view();
+		empty($this->_path) and $this->default_path();
 		$this->before();
 	}
 
@@ -48,27 +29,25 @@ abstract class Base
 	 */
 	public function _set_app(Application\Base $app)
 	{
-		$this->_app = $app;
+		parent::_set_app($app);
 		$this->_loader = $app->loader;
-		$this->_context = $app->active_request();
 	}
 
 	/**
-	 * Fetches the Viewable based on the $view_name property or Presenter classname
+	 * Generates the View path based on the Presenter classname
+	 *
+	 * @return  Base
 	 */
-	public function fetch_view()
+	public function default_path()
 	{
-		if (empty($this->_view_path))
+		$class = get_class($this);
+		if (($pos = strpos($class, 'Presenter\\')) !== false)
 		{
-			$class = get_class($this);
-			if (($pos = strpos($class, 'Presenter\\')) !== false)
-			{
-				$class = substr($class, $pos + 10);
-			}
-			$this->_view_path = str_replace('\\', '/', strtolower($class));
+			$class = substr($class, $pos + 10);
 		}
+		$this->_path = str_replace('\\', '/', strtolower($class));
 
-		$this->_view = $this->_app->forge('View', $this->_view_path);
+		return $this;
 	}
 
 	/**
@@ -85,28 +64,6 @@ abstract class Base
 	 * Method to do general viewmodel finishing up
 	 */
 	public function after() {}
-
-	/**
-	 * Uses magic setter on the Viewable
-	 *
-	 * @param  $name
-	 * @param  $value
-	 */
-	public function __set($name, $value)
-	{
-		$this->_view->{$name} = $value;
-	}
-
-	/**
-	 * Uses magic getter on the Viewable
-	 *
-	 * @param $name
-	 * @return mixed
-	 */
-	public function __get($name)
-	{
-		return $this->_view->{$name};
-	}
 
 	protected function execute($method = null)
 	{

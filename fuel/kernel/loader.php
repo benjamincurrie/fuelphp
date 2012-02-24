@@ -13,6 +13,8 @@ _env('dic')->set_classes(array(
 	'Request'          => 'Fuel\\Kernel\\Request\\Fuel',
 	'Response'         => 'Fuel\\Kernel\\Response\\Base',
 	'Route'            => 'Fuel\\Kernel\\Route\\Fuel',
+	'Security'         => 'Fuel\\Kernel\\Security\\Base',
+	'Security_Csrf'    => 'Fuel\\Kernel\\Security\\Csrf\\Cookie',
 	'Security_String'  => 'Fuel\\Kernel\\Security\\String\\Htmlentities',
 	'View'             => 'Fuel\\Kernel\\View\\Base',
 ));

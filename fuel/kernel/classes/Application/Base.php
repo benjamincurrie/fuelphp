@@ -31,6 +31,11 @@ abstract class Base
 	public $loader;
 
 	/**
+	 * @var  \Fuel\Kernel\Security\Base  the Application's security instance
+	 */
+	public $security;
+
+	/**
 	 * @var  \Fuel\Kernel\Data\Config
 	 */
 	public $config;
@@ -94,11 +99,14 @@ abstract class Base
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
 
-		// Add the Exception Handler
+		// Load the Exception Handler
 		$this->error = $this->forge('Error');
 
 		// Load main Application config
 		$this->config = $this->forge('Config')->load('config.php');
+
+		// Load the Security class
+		$this->security = $this->forge('Security');
 
 		// Add main Application language
 		$this->language = $this->forge('Language');
@@ -202,7 +210,7 @@ abstract class Base
 	 */
 	public function request($uri)
 	{
-		$this->request = $this->forge('Request', $uri);
+		$this->request = $this->forge('Request', $this->security->clean_uri($uri));
 		return $this;
 	}
 

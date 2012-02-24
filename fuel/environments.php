@@ -15,7 +15,7 @@ return array(
 			'locale'    => null,
 			'language'  => 'en',
 			'timezone'  => 'UTC',
-			'encoding'  => 'UTF8',
+			'encoding'  => 'UTF-8',
 			'packages'  => array('core'),
 		);
 	},

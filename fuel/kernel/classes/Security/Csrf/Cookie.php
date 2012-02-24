@@ -20,14 +20,9 @@ class Cookie extends Base
 		parent::_set_app($app);
 
 		$this->token_key = $this->app->config->get('security.csrf_token_key', 'fuel_csrf_token');
-
-		if ($this->app->config->get('security.csrf_autoload', true))
-		{
-			static::check_token();
-		}
 	}
 
-	protected function update_token($force_reset = false)
+	public function update_token($force_reset = false)
 	{
 		$old_token = $this->app->active_request()->input->cookie($this->token_key);
 
@@ -43,7 +38,7 @@ class Cookie extends Base
 
 			$expiration = $this->app->config->get('security.csrf_expiration', 0);
 			// @todo implement cookie class
-			\Cookie::set(static::$csrf_token_key, static::$csrf_token, $expiration);
+			// \Cookie::set(static::$csrf_token_key, static::$csrf_token, $expiration);
 		}
 	}
 

@@ -4,6 +4,7 @@ namespace Fuel\Core\Parser;
 use Fuel\Kernel\Parser\Parsable;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
+use Twig_Loader_String;
 
 // Start with registering the Twig Autoloader
 \Twig_Autoloader::register();
@@ -16,9 +17,9 @@ class Twig implements Parsable
 	protected $parser;
 
 	/**
-	 * @var  \Twig_Loader_Filesystem
+	 * @var  \Twig_Loader_String
 	 */
-	protected $loader;
+	protected $loader_string;
 
 	/**
 	 * Returns the expected file extension
@@ -39,11 +40,11 @@ class Twig implements Parsable
 	{
 		if ( ! empty($this->parser))
 		{
-			$this->parser->setLoader($this->loader);
 			return $this->parser;
 		}
 
 		// Twig Environment
+		$this->loader = new Twig_Loader_String();
 		$this->parser = new Twig_Environment($this->loader);
 
 		return $this->parser;
@@ -61,8 +62,8 @@ class Twig implements Parsable
 		// Extract View name/extension (ex. "template.twig")
 		$view_name = pathinfo($path, PATHINFO_BASENAME);
 
-		// Twig Loader
-		$this->loader = new Twig_Loader_Filesystem(array(pathinfo($path, PATHINFO_DIRNAME)));
+		// Use Twig filesystem loader
+		$this->parser()->setLoader(new Twig_Loader_Filesystem(array(pathinfo($path, PATHINFO_DIRNAME))));
 
 		try
 		{
@@ -85,6 +86,17 @@ class Twig implements Parsable
 	 */
 	public function parse_string($template, array $data = array())
 	{
-		return 'Not yet implemented';
+		try
+		{
+			! $this->loader_string and $this->loader_string = new Twig_Loader_String();
+			$this->parser()->setLoader($this->loader_string);
+			return $this->parser()->loadTemplate($template)->render($data);
+		}
+		catch (\Exception $e)
+		{
+			// Delete the output buffer & re-throw the exception
+			ob_end_clean();
+			throw $e;
+		}
 	}
 }

@@ -6,11 +6,6 @@ use Fuel\Kernel\Application;
 abstract class Base
 {
 	/**
-	 * @var  \Fuel\Kernel\Request\Base
-	 */
-	protected $request;
-
-	/**
 	 * @var  \Fuel\Kernel\Application\Base
 	 */
 	protected $app;
@@ -22,8 +17,7 @@ abstract class Base
 	 */
 	public function _set_app(Application\Base $app)
 	{
-		$this->app      = $app;
-		$this->request  = $app->active_request();
+		$this->app = $app;
 	}
 
 	/**

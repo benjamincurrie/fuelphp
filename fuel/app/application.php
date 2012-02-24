@@ -9,6 +9,6 @@ class App extends Application\Base
 	{
 		$this->add_route('/', 'Welcome');
 
-		$this->add_route('/(.*)', 'Welcome/catchall/$1');
+		$this->add_route('GET /(.*)', 'Welcome/catchall/$1');
 	}
 }

@@ -38,7 +38,7 @@ class Fuel extends Base
 		if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
 		{
 			$this->search   = ltrim(substr($this->search, strlen($matches[0])), ' /');
-			$this->methods  = explode('|', $matches[1]);
+			$this->methods  = explode('|', trim($matches[0]));
 		}
 
 		$this->translation  = is_null($translation) ? $this->search : $translation;
@@ -52,7 +52,8 @@ class Fuel extends Base
 	 */
 	public function matches($uri)
 	{
-		if ( ! empty($this->methods) and ! in_array(strtoupper($this->request->input()->method()), $this->methods))
+		$request = $this->app->active_request();
+		if ( ! empty($this->methods) and ! in_array(strtoupper($request->input()->method()), $this->methods))
 		{
 			return false;
 		}
@@ -60,13 +61,12 @@ class Fuel extends Base
 		if ($this->search instanceof \Closure)
 		{
 			// Given translation is superseded by the callback output when not just boolean true
-			$translation = call_user_func($this->search, $uri, $this->app, $this->request);
+			$translation = call_user_func($this->search, $uri, $this->app, $request);
 			$translation === true and $translation = $this->translation;
 
 			if ($translation)
 			{
-				$this->parse($translation);
-				return true;
+				return $this->parse($translation);
 			}
 		}
 		elseif (is_string($this->search))
@@ -74,8 +74,7 @@ class Fuel extends Base
 			$translation = preg_replace('#^'.$this->search.'$#uD', $this->translation, $uri, -1, $count);
 			if ($count)
 			{
-				$this->parse($translation);
-				return true;
+				return $this->parse($translation);
 			}
 		}
 

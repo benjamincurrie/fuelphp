@@ -59,17 +59,22 @@ class Fuel extends Base
 
 		if ($this->search instanceof \Closure)
 		{
-			if ( ! call_user_func($this->search, $uri, $this->app, $this->request))
+			// Given translation is superseded by the callback output when not just boolean true
+			$translation = call_user_func($this->search, $uri, $this->app, $this->request);
+			$translation === true and $translation = $this->translation;
+
+			// When empty report failure
+			if ( ! $translation)
 			{
 				return false;
 			}
 		}
-		elseif (preg_match('#^'.$this->search.'$#uD', $uri, $params) == false)
+		elseif ( ! ($translation = preg_replace('#^'.$this->search.'$#uD', $this->translation, $uri, -1, $count)))
 		{
 			return false;
 		}
 
-		return $this->parse();
+		return $this->parse($translation);
 	}
 
 	/**
@@ -77,17 +82,17 @@ class Fuel extends Base
 	 *
 	 * @return  bool
 	 */
-	protected function parse()
+	protected function parse($translation)
 	{
 		// Return directly if it's a Closure or a callable array
-		if ($this->translation instanceof \Closure
-			or (is_array($this->translation) and is_callable($this->translation)))
+		if ($translation instanceof \Closure
+			or (is_array($translation) and is_callable($translation)))
 		{
 			return true;
 		}
 
 		// Return Controller when found
-		if (is_string($this->translation) and ($controller = $this->find_controller($this->translation)))
+		if (is_string($translation) and ($controller = $this->find_controller($translation)))
 		{
 			$this->match = array($this->app->forge($controller), 'router');
 			return true;

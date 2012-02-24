@@ -167,8 +167,6 @@ abstract class Base
 	 */
 	public function process_route($uri)
 	{
-		empty($uri) and $uri = '_root_';
-
 		// Attempt other routes
 		foreach ($this->routes as $route)
 		{

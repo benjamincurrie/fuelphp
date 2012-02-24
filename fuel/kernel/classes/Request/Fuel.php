@@ -23,7 +23,7 @@ class Fuel extends \Classes\Request\Base
 
 	public function __construct($uri = '', array $input = array())
 	{
-		$this->request_uri  = trim((string) $uri, '/');
+		$this->request_uri  = '/'.trim((string) $uri, '/');
 		$this->input        = $input ?: _env('input');
 	}
 

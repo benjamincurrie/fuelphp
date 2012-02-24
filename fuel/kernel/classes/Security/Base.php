@@ -11,6 +11,11 @@ class Base
 	protected $app;
 
 	/**
+	 * @var  \Fuel\Kernel\Security\Crypt\Cryptable
+	 */
+	public $crypt;
+
+	/**
 	 * @var  \Fuel\Kernel\Security\Csrf\Base
 	 */
 	public $csrf;
@@ -28,9 +33,48 @@ class Base
 	public function _set_app(Application\Base $app)
 	{
 		$this->app = $app;
+	}
 
-		$this->csrf    = $app->forge('Security_Csrf');
-		$this->string  = $app->forge('Security_String');
+	/**
+	 * Returns the App's Crypt instance
+	 *
+	 * @return  Crypt\Cryptable
+	 */
+	public function crypt()
+	{
+		if (empty($this->crypt))
+		{
+			$this->crypt = $this->app->forge('Security_Crypt');
+		}
+		return $this->crypt;
+	}
+
+	/**
+	 * Returns the App's Csrf instance
+	 *
+	 * @return  Csrf\Base
+	 */
+	public function csrf()
+	{
+		if (empty($this->csrf))
+		{
+			$this->csrf = $this->app->forge('Security_Csrf');
+		}
+		return $this->csrf;
+	}
+
+	/**
+	 * Returns the App's String cleaner instance
+	 *
+	 * @return  String\Base
+	 */
+	public function string()
+	{
+		if (empty($this->string))
+		{
+			$this->string = $this->app->forge('Security_String');
+		}
+		return $this->string;
 	}
 
 	/**
@@ -52,7 +96,7 @@ class Base
 	 */
 	public function clean($input)
 	{
-		return $this->string->clean($input);
+		return $this->string()->clean($input);
 	}
 
 	/**
@@ -62,7 +106,7 @@ class Base
 	 */
 	public function get_token()
 	{
-		return $this->csrf->get_token();
+		return $this->csrf()->get_token();
 	}
 
 	/**
@@ -73,6 +117,6 @@ class Base
 	 */
 	public function check_token($token = null)
 	{
-		return $this->csrf->check_token($token);
+		return $this->csrf()->check_token($token);
 	}
 }

@@ -51,47 +51,42 @@ abstract class Base extends View\Base
 	}
 
 	/**
-	 * Method to do general viewmodel setup
+	 * Method to do general Presenter setup
 	 */
 	public function before() {}
 
 	/**
-	 * Default method that'll be run upon the viewmodel
+	 * Default method that'll be run upon the Presenter
 	 */
 	abstract public function view();
 
 	/**
-	 * Method to do general viewmodel finishing up
+	 * Method to do general Presenter finishing up
 	 */
 	public function after() {}
 
-	protected function execute($method = null)
+	/**
+	 * Extend render() to execute the Presenter methods
+	 *
+	 * @param null $method
+	 * @return string
+	 */
+	protected function render($method = null)
 	{
+		// Run a specific given method and finish up with after()
 		if ($method !== null)
 		{
 			$this->{$method}();
 			$this->after();
 		}
+		// Run this Presenter's main method, finish up with after() and prevent is from being run again
 		elseif ( ! empty($this->_method))
 		{
 			$this->{$this->_method}();
 			$this->_method = null;
 			$this->after();
 		}
-	}
 
-	/**
-	 * Turns the presenter into a string
-	 *
-	 * @return  string
-	 */
-	public function __toString()
-	{
-		$this->_context->activate();
-		$this->execute();
-		$view = (string) $this->_view;
-		$this->_context->deactivate();
-
-		return $view;
+		return parent::render();
 	}
 }

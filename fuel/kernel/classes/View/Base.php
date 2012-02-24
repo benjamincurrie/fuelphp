@@ -117,14 +117,38 @@ class Base implements Viewable
 	}
 
 	/**
-	 * Renders and returns the view output
+	 * Render the View
+	 *
+	 * @return  string
+	 */
+	protected function render()
+	{
+		return $this->_path
+			? $this->_parser->parse_file($this->_path, $this->_data)
+			: $this->_parser->parse_string($this->_template, $this->_data);
+	}
+
+	/**
+	 * Turns the presenter into a string
 	 *
 	 * @return  string
 	 */
 	public function __toString()
 	{
-		return $this->_path
-			? $this->_parser->parse_file($this->_path, $this->_data)
-			: $this->_parser->parse_string($this->_template, $this->_data);
+		// First make sure the Request that created this is active
+		$context_activated = false;
+		if (_app()->active_request() !== $this->_context)
+		{
+			$this->_context->activate();
+			$context_activated = true;
+		}
+
+		// Execute t
+		$view = $this->render();
+
+		// When a request was activated, deactivate now we're done
+		$context_activated and $this->_context->deactivate();
+
+		return $view;
 	}
 }

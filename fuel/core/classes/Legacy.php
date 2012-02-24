@@ -2,7 +2,7 @@
 
 namespace Fuel\Core;
 
-abstract class Front
+abstract class Legacy
 {
 	/**
 	 * @var  string  (required) Overwrite for the classname this front represents

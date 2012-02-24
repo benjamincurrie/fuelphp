@@ -1,8 +1,9 @@
 <?php
 
-namespace Fuel\Core;
+namespace Fuel\Core\Legacy;
+use Fuel\Core\Legacy;
 
-abstract class FrontInstance extends Front
+abstract class Instance extends Legacy
 {
 	/**
 	 * Forges an object for this front

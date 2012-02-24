@@ -1,9 +1,9 @@
 <?php
 
-namespace Fuel\Core\Front;
-use Fuel\Core\Front;
+namespace Fuel\Core\Legacy;
+use Fuel\Core\Legacy;
 
-class Input extends Front
+class Input extends Legacy
 {
 	protected static $classname = 'Input';
 

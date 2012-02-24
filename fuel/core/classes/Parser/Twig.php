@@ -6,7 +6,8 @@ use Twig_Environment;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
 
-// Start with registering the Twig Autoloader
+// Load Twig
+require _env()->path('core').'vendor/Twig/Autoloader.php';
 \Twig_Autoloader::register();
 
 class Twig implements Parsable

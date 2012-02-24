@@ -2,7 +2,9 @@
 
 namespace Fuel\Core\Parser;
 use Fuel\Kernel\Parser\Parsable;
-use MARKDOWN_PARSER_CLASS;
+
+// Load Markdown
+require _env()->path('core').'vendor/markdown/markdown.php';
 
 class Markdown implements Parsable
 {

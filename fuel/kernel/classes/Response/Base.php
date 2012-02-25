@@ -142,9 +142,10 @@ class Base implements Responsible
 	 *
 	 * @param   string  $name     The header name, or null for all headers
 	 * @param   mixed   $default  Default return when header not set
+	 * @param   bool    $all      Whether to return all or just the last
 	 * @return  array|string
 	 */
-	public function get_header($name = null, $default = null)
+	public function get_header($name = null, $default = null, $all = false)
 	{
 		if (func_num_args() == 0)
 		{
@@ -155,7 +156,7 @@ class Base implements Responsible
 			return $default;
 		}
 
-		return count($this->headers[$name]) == 1 ? reset($this->headers[$name]) : $this->headers[$name];
+		return $all ? end($this->headers[$name]) : $this->headers[$name];
 	}
 
 	/**

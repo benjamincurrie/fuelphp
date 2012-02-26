@@ -63,7 +63,7 @@ class Oil extends Classes\Route\Fuel
 		isset($this->aliases[$controller]) and $controller = $this->aliases[$controller];
 
 		// Attempt to find the Controller
-		if ($this->parse($controller))
+		if ($this->parse(ucfirst($controller)))
 		{
 			return true;
 		}

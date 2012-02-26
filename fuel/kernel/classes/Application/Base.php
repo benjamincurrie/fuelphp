@@ -257,12 +257,12 @@ abstract class Base
 	 * @param   bool    $multiple
 	 * @return  array|bool
 	 */
-	public function find_file($location, $file, $basepath = null, $multiple = false)
+	public function find_file($location, $file, $multiple = false)
 	{
 		$return = $multiple ? array() : false;
 
 		// First search app
-		$path = $this->loader->find_file($location, $file, $basepath);
+		$path = $this->loader->find_file($location, $file);
 		if ($path)
 		{
 			if ( ! $multiple)
@@ -275,7 +275,7 @@ abstract class Base
 		// If not found or searching for multiple continue with packages
 		foreach ($this->packages as $pkg)
 		{
-			if ($path = _loader()->package($pkg)->find_file($location, $file, $basepath))
+			if ($path = _loader()->package($pkg)->find_file($location, $file))
 			{
 				if ( ! $multiple)
 				{
@@ -300,9 +300,9 @@ abstract class Base
 	 * @param   $file
 	 * @return  array|bool
 	 */
-	public function find_files($location, $file, $basepath = null)
+	public function find_files($location, $file)
 	{
-		return $this->find_file($location, $file, $basepath, true);
+		return $this->find_file($location, $file, true);
 	}
 
 	/**

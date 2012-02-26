@@ -315,10 +315,9 @@ class Package implements Loadable
 	 * @param   string  $basepath
 	 * @return  bool|string
 	 */
-	public function find_file($location, $file, $basepath = null)
+	public function find_file($location, $file)
 	{
 		$location  = trim($location, '/\\').'/';
-		$basepath = is_null($basepath) ? 'resources/' : trim($basepath, '/\\').'/';
 
 		// if given attempt specific module load
 		if (($pos = strpos($file, ':')) !== false)
@@ -326,7 +325,7 @@ class Package implements Loadable
 			$module = substr($file, 0, $pos).'/';
 			if (isset($this->modules[$module]))
 			{
-				if (is_file($path = $this->path.$module.$basepath.$location.substr($file, $pos + 1)))
+				if (is_file($path = $this->path.$module.$location.substr($file, $pos + 1)))
 				{
 					return $path;
 				}
@@ -335,7 +334,7 @@ class Package implements Loadable
 		}
 
 		// attempt fetch from base
-		if (is_file($path = $this->path.$basepath.$location.$file))
+		if (is_file($path = $this->path.$location.$file))
 		{
 			return $path;
 		}
@@ -343,7 +342,7 @@ class Package implements Loadable
 		// attempt to find in modules
 		foreach ($this->modules as $path => $ns)
 		{
-			if (is_file($path = $this->path.'modules/'.$path.$basepath.$location.$file))
+			if (is_file($path = $this->path.'modules/'.$path.$location.$file))
 			{
 				return $path;
 			}

@@ -34,5 +34,5 @@ interface Loadable
 	 * @param   string  $file
 	 * @return  bool|string  full path or false for failure
 	 */
-	public function find_file($location, $file, $basepath = null);
+	public function find_file($location, $file);
 }

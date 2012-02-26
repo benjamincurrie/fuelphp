@@ -9,13 +9,13 @@
 	</php>
 	<testsuites>
 		<testsuite name="kernel">
-			<directory suffix=".php">kernel/tests</directory>
+			<directory suffix=".php">kernel/resources/tests</directory>
 		</testsuite>
 		<testsuite name="core">
-			<directory suffix=".php">core/tests</directory>
+			<directory suffix=".php">core/resources/tests</directory>
 		</testsuite>
 		<testsuite name="app">
-			<directory suffix=".php">app/tests</directory>
+			<directory suffix=".php">app/resources/tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

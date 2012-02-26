@@ -47,7 +47,7 @@ class Oil extends Classes\Route\Fuel
 			return false;
 		}
 
-		if ($this->cli->option(1) == null)
+		if (in_array($this->cli->option(1), array('-v', '-version', '-help', null)))
 		{
 			if ($this->cli->option('v', $this->cli->option('version')))
 			{
@@ -59,7 +59,13 @@ class Oil extends Classes\Route\Fuel
 		$controller = $this->cli->option(1);
 		isset($this->aliases[$controller]) and $controller = $this->aliases[$controller];
 
-		return $this->parse($controller) or $this->parse('main/help');
+		if ($this->parse($controller))
+		{
+			return true;
+		}
+
+		$this->cli->write('Error: controller for command "'.$controller.'" not found.');
+		return  $this->parse('main/help');
 	}
 
 	/**

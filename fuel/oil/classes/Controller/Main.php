@@ -10,7 +10,7 @@ class Main extends Classes\Controller\Cli
 	 *
 	 * @return  string
 	 */
-	public function version()
+	public function action_version()
 	{
 		return 'FuelPHP '.\Fuel\Kernel\Environment::VERSION;
 	}

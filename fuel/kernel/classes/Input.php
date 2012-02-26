@@ -407,6 +407,10 @@ class Input
 		{
 			return $this->server_vars;
 		}
+		elseif (array_get_dot_key($index, $this->server_vars, $return))
+		{
+			return $return;
+		}
 		elseif ( ! array_get_dot_key(strtoupper($index), $this->server_vars, $return))
 		{
 			return $this->parent ? $this->parent->server($index, $default) : $default;

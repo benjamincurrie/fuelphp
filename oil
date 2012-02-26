@@ -18,9 +18,6 @@ $env = Environment::instance()->init(array(
 	'path'  => FUELPATH,
 ));
 
-// Uncomment the following line to enable the Fuel 1.x Legacy classes
-// _loader()->add_global_ns_alias('Fuel\\Core\\Legacy');
-
 /**
  * Initialize Application in package 'app'
  */

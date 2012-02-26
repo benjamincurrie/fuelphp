@@ -18,4 +18,5 @@ return _forge('Package')
 	->add_class_aliases(array(
 		'Classes\\Controller\\Template'  => 'Fuel\\Core\\Controller\\Template',
 		'Classes\\Request\\Curl'         => 'Fuel\\Core\\Request\\Curl',
+		'Classes\\Task\\Base'            => 'Fuel\\Core\\Task\\Base',
 	));

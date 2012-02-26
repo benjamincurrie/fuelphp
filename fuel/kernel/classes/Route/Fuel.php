@@ -95,6 +95,7 @@ class Fuel extends Base
 	/**
 	 * Attempts to find the controller and returns success
 	 *
+	 * @param   string  $translation
 	 * @return  bool
 	 */
 	protected function parse($translation)
@@ -120,7 +121,8 @@ class Fuel extends Base
 	/**
 	 * Parses the URI into a controller class
 	 *
-	 * @param  $uri
+	 * @param   $uri
+	 * @return  bool|string
 	 */
 	protected function find_controller($uri)
 	{

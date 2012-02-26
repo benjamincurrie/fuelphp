@@ -1,9 +1,9 @@
 <?php
 
-namespace Fuel\Oil\Controller;
+namespace Fuel\Oil\Task;
 use Classes;
 
-class Main extends Classes\Controller\Cli
+class Main extends Classes\Task\Base
 {
 	/**
 	 * Returns the Fuel version

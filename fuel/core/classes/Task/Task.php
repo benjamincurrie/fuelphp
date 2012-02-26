@@ -1,9 +1,9 @@
 <?php
 
-namespace Fuel\Oil\Controller;
+namespace Fuel\Core\Task;
 use Classes;
 
-abstract class Cli extends Classes\Controller\Base
+abstract class Base extends Classes\Controller\Base
 {
 	/**
 	 * @var  \Fuel\Kernel\Cli

@@ -4,7 +4,7 @@ namespace Fuel\Oil\Route;
 use Fuel\Kernel\Application;
 use Classes;
 
-class Oil extends Classes\Route\Fuel
+class Oil extends Classes\Route\Base
 {
 	/**
 	 * @var  \Fuel\Kernel\Application\Base
@@ -26,6 +26,16 @@ class Oil extends Classes\Route\Fuel
 		'r'     => 'refine',
 		't'     => 'test',
 	);
+
+	/**
+	 * @var  callback  something callable that matched
+	 */
+	protected $match;
+
+	/**
+	 * @var  array  URI segments
+	 */
+	protected $segments = array();
 
 	public function __construct() {}
 
@@ -71,6 +81,49 @@ class Oil extends Classes\Route\Fuel
 		// On failure: report it and show help text
 		$this->cli->write('Error: controller for command "'.$controller.'" not found.');
 		return  $this->parse('main/help');
+	}
+
+	/**
+	 * Attempts to find the controller and returns success
+	 *
+	 * @return  bool
+	 */
+	protected function parse($task)
+	{
+		// Return Controller when found
+		if ($task = $this->find_task($task))
+		{
+			$this->match = array($this->app->forge($task), 'router');
+			return true;
+		}
+
+		// Failure...
+		return false;
+	}
+
+	/**
+	 * Parses the URI into a controller class
+	 *
+	 * @param   $uri
+	 * @return  string|bool
+	 */
+	protected function find_task($uri)
+	{
+		if ($task = $this->app->find_class('Task', $uri))
+		{
+			return $task;
+		}
+		return false;
+	}
+
+	/**
+	 * Return an array with 1. callable to be the task and 2. additional params array
+	 *
+	 * @return  array(callback, params)
+	 */
+	public function match()
+	{
+		return array($this->match, $this->segments);
 	}
 
 	/**

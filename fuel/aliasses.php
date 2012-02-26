@@ -14,8 +14,6 @@ namespace Classes\Controller
 	class Base extends \Fuel\Kernel\Controller\Base {}
 
 	class Template extends \Fuel\Core\Controller\Template {}
-
-	class Cli extends \Fuel\Oil\Controller\Cli {}
 }
 
 namespace Classes\Data
@@ -60,6 +58,11 @@ namespace Classes\Route
 	class Fuel extends \Fuel\Kernel\Route\Fuel {}
 
 	class Oil extends \Fuel\Oil\Route\Oil {}
+}
+
+namespace Classes\Task
+{
+	class Base extends \Fuel\Core\Task\Base {}
 }
 
 namespace Classes\View

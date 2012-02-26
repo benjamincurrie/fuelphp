@@ -1,10 +1,10 @@
 <?php
 
-namespace Fuel\Oil\Controller;
+namespace Fuel\Oil\Task;
 use Classes;
 
 
-class Test extends Classes\Controller\Cli
+class Test extends Classes\Task\Base
 {
 	public function before()
 	{

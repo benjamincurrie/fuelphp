@@ -1,9 +1,9 @@
 <?php
 
-namespace Fuel\Oil\Controller;
+namespace Fuel\Oil\Task;
 use Classes;
 
-class Composer extends Classes\Controller\Cli
+class Composer extends Classes\Task\Base
 {
 	/**
 	 * @var  string

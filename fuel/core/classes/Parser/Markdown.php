@@ -3,9 +3,6 @@
 namespace Fuel\Core\Parser;
 use Fuel\Kernel\Parser\Parsable;
 
-// Load Markdown
-require _env()->path('core').'vendor/markdown/markdown.php';
-
 class Markdown implements Parsable
 {
 	public function extension()
@@ -16,15 +13,14 @@ class Markdown implements Parsable
 	/**
 	 * Returns the Parser lib object
 	 *
-	 * @return  \Markdown_Parser
+	 * @return  \dflydev\markdown\MarkdownParser
 	 */
 	public static function parser()
 	{
 		static $parser = null;
 		if (is_null($parser))
 		{
-			$parser_class = MARKDOWN_PARSER_CLASS;
-			$parser = new $parser_class;
+			$parser = new \dflydev\markdown\MarkdownParser();
 		}
 
 		return $parser;

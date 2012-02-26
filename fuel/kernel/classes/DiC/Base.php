@@ -133,7 +133,7 @@ class Base implements Dependable
 		$name = is_null($name) ? '__default' : strtolower($name);
 		if ( ! isset($this->objects[$classname][$name]))
 		{
-			if ( ! $this->parent)
+			if ( ! $this->parent or $name == '__default')
 			{
 				// Return 'default' instance when no name is given, is forged without params
 				if ($name == '__default')

@@ -20,12 +20,12 @@ interface Loadable
 	public function set_routable($routable);
 
 	/**
-	 * Locate controller and load the class
+	 * Locate specialized classes like Controllers & Tasks and load them
 	 *
-	 * @param   string  $controller
+	 * @param   string  $path
 	 * @return  bool|string  classname or false for failure
 	 */
-	public function find_controller($controller);
+	public function find_class($type, $path);
 
 	/**
 	 * Locate file

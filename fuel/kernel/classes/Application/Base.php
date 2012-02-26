@@ -311,10 +311,10 @@ abstract class Base
 	 * @param   string  $controller
 	 * @return  bool|string  the controller classname or false on failure
 	 */
-	public function find_controller($controller)
+	public function find_class($type, $controller)
 	{
-		// First attempt the package
-		if ($found = $this->loader->find_controller($controller))
+		// First attempt the Application
+		if ($found = $this->loader->find_class($type, $controller))
 		{
 			return $found;
 		}
@@ -323,7 +323,7 @@ abstract class Base
 		foreach ($this->packages as $pkg)
 		{
 			is_array($pkg) and $pkg = reset($pkg);
-			if ($found = _loader()->package($pkg)->find_controller($controller))
+			if ($found = _loader()->package($pkg)->find_class($type, $controller))
 			{
 				return $found;
 			}

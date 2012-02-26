@@ -75,10 +75,11 @@ class Composer implements Loadable
 	/**
 	 * Disable finding controllers
 	 *
-	 * @param   string  $controller
+	 * @param   string  $type
+	 * @param   string  $path
 	 * @return  bool|string
 	 */
-	public function find_controller($controller)
+	public function find_class($type, $path)
 	{
 		return false;
 	}

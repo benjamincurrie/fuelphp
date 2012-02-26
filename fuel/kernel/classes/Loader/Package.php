@@ -17,7 +17,12 @@ class Package implements Loadable
 	/**
 	 * @var  string  string to prefix the Controller classname with, will be relative to the base namespace
 	 */
-	protected $controller_prefix = 'Controller\\';
+	protected $class_prefixes = array(
+		'controller'  => 'Controller\\',
+		'model'       => 'Model\\',
+		'presenter'   => 'Presenter\\',
+		'task'        => 'Task\\',
+	);
 
 	/**
 	 * @var  array  package modules with array(relative path => relative subnamespace) (with trailing backslash)
@@ -254,19 +259,32 @@ class Package implements Loadable
 	 * @param   string  $prefix
 	 * @return  Package
 	 */
-	public function set_controller_prefix($prefix)
+	public function set_class_type_prefix($type, $prefix)
 	{
-		$this->controller_prefix = (string) $prefix;
+		$this->class_prefixes[strtolower($type)] = $prefix;
 		return $this;
+	}
+
+	/**
+	 * Get the class prefix for a specific type
+	 *
+	 * @param   string  $type
+	 * @return  string
+	 */
+	public function class_type_prefix($type)
+	{
+		$type = strtolower($type);
+		return isset($this->class_prefixes[$type]) ? $this->class_prefixes[$type] : '';
 	}
 
 	/**
 	 * Attempts to find a controller, loads the class and returns the classname if found
 	 *
-	 * @param   string  $controller
+	 * @param   string  $type  for example: controller or task
+	 * @param   string  $path
 	 * @return  bool|string
 	 */
-	public function find_controller($controller)
+	public function find_class($type, $path)
 	{
 		// Fail if not routable
 		if ( ! $this->routable)
@@ -278,30 +296,30 @@ class Package implements Loadable
 		elseif (is_string($this->routable))
 		{
 			// If string trigger isn't found at the beginning return false
-			if (strpos(strtolower($controller), strtolower($this->routable).'/') !== 0)
+			if (strpos(strtolower($path), strtolower($this->routable).'/') !== 0)
 			{
 				return false;
 			}
 			// Strip trigger from controller name
-			$controller = substr($controller, strlen($this->routable) + 1);
+			$path = substr($path, strlen($this->routable) + 1);
 		}
 
 		// Build the namespace for the controller
 		$namespace = $this->namespace;
-		if ($pos = strpos($controller, '/'))
+		if ($pos = strpos($path, '/'))
 		{
-			$module = substr($controller, 0, $pos).'/';
+			$module = substr($path, 0, $pos).'/';
 			if (isset($this->modules[$module]))
 			{
 				$namespace  .= $this->modules[$module];
-				$controller  = substr($controller, $pos + 1);
+				$path        = substr($path, $pos + 1);
 			}
 		}
 
-		$controller = $namespace.$this->controller_prefix.str_replace('/', '_', $controller);
-		if ($this->load_class($controller))
+		$path = $namespace.$this->class_type_prefix($type).str_replace('/', '_', $path);
+		if ($this->load_class($path))
 		{
-			return $controller;
+			return $path;
 		}
 
 		return false;

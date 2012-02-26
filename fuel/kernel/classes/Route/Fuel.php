@@ -127,7 +127,7 @@ class Fuel extends Base
 		$uri_array = explode('/', trim($uri, '/'));
 		while ($uri_array)
 		{
-			if ($controller = $this->app->find_controller(implode('/', $uri_array)))
+			if ($controller = $this->app->find_class('Controller', implode('/', $uri_array)))
 			{
 				return $controller;
 			}

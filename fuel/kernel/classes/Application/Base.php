@@ -81,6 +81,7 @@ abstract class Base
 
 		// When not set by the closure default to Kernel DiC
 		( ! $this->dic instanceof DiC\Dependable) and $this->dic = new DiC\Base($this, _env('dic'));
+		$this->setup();
 
 		// Load the Exception Handler
 		$this->error = $this->forge('Error');
@@ -97,6 +98,11 @@ abstract class Base
 		// Add the routes
 		$this->router();
 	}
+
+	/**
+	 * Setup: this method is run before anything else right after the DiC is initialized
+	 */
+	public function setup() {}
 
 	/**
 	 * Define the routes for this application

@@ -1,12 +1,19 @@
 <?php
 
 use Classes\Application;
-use Classes\Route\Oil as Route;
 
 class Oil extends Application\Base
 {
+	public function setup()
+	{
+		$this->dic->set_classes(array(
+			'Route'  => 'Classes\\Route\\Oil',
+			'View'   => 'Fuel\\Kernel\\View\\Base',
+		));
+	}
+
 	public function router()
 	{
-		$this->add_route('__commandline', new Route());
+		$this->add_route('__commandline', $this->forge('Route'));
 	}
 }

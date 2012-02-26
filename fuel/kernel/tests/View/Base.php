@@ -2,6 +2,9 @@
 
 namespace Fuel\Kernel\View;
 
+/**
+ * @backupGlobals  disabled
+ */
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
 	public function test_construct()
@@ -42,7 +45,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 		$view = new Base();
 		$value = 'test';
 		$view->test = $value;
-		$this->assertEquals($value, $this->test);
+		$this->assertEquals($value, $view->test);
 	}
 
 	/**

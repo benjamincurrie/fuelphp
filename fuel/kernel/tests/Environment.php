@@ -2,6 +2,9 @@
 
 namespace Fuel\Kernel;
 
+/**
+ * @backupGlobals  disabled
+ */
 class EnvironmentTest extends \PHPUnit_Framework_TestCase
 {
 	/**
@@ -17,12 +20,13 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$this->env = new Environment();
+		$this->env->input = new Input();
 
-		$this->_saved['https']   = $_SERVER['HTTPS'];
+		$this->_saved['https']   = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null;
 		$_SERVER['HTTPS']        = 'on';
-		$this->_saved['host']    = $_SERVER['HTTP_HOST'];
+		$this->_saved['host']    = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 		$_SERVER['HTTP_HOST']    = 'example.com';
-		$this->_saved['script']  = $_SERVER['SCRIPT_NAME'];
+		$this->_saved['script']  = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null;
 		$_SERVER['SCRIPT_NAME']  = '/test/index.php';
 
 		$this->_saved['timezone'] = date_default_timezone_get();
@@ -43,7 +47,7 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_instance()
 	{
-		$this->assertInstanceOf('Fuel\\Kernel\\Environment', $this->env);
+		$this->assertInstanceOf('Fuel\\Kernel\\Environment', Environment::instance());
 	}
 
 	public function test_init()
@@ -62,13 +66,14 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @provider  timezone_provider
+	 * @dataProvider  timezone_provider
 	 */
 	public function test_set_timezone($tz)
 	{
 		$this->env->set_timezone($tz);
 		$this->assertEquals($tz, date_default_timezone_get());
 	}
+
 	public function timezone_provider()
 	{
 		return array(

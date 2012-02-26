@@ -264,7 +264,7 @@ class Environment
 			{
 				return $handler->handle($error);
 			}
-			exit(nl2br($error));
+			exit(_env('is_cli') ? $error : nl2br($error));
 		});
 		set_error_handler(function ($severity, $message, $filepath, $line)
 		{

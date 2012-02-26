@@ -2,6 +2,9 @@
 
 namespace Fuel\Kernel\Response;
 
+/**
+ * @backupGlobals  disabled
+ */
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
 	public function test_construct()
@@ -77,11 +80,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
 		// Add a single header
 		$response->set_header($key, $val1);
-		$this->assertEquals(array($val1), $response->get_header($key));
+		$this->assertEquals(array($val1), $response->get_header($key, null, true));
 
 		// Add a second header
 		$response->set_header($key, $val2, false);
-		$this->assertEquals(array($val1, $val2), $response->get_header($key));
+		$this->assertEquals(array($val1, $val2), $response->get_header($key, null, true));
 	}
 
 	public function test_body_get()

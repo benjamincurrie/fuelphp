@@ -31,19 +31,27 @@ class Fuel extends Base
 
 	public function __construct($search, $translation = null, array $methods = array())
 	{
-		$this->search   = $search;
-		$this->methods  = $methods;
+		$this->methods = $methods;
 
-		// The search uri may start with allowed methods 'DELETE ' or multiple 'GET|POST|PUT '
-		if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
+		$this->search = $search;
+		if (is_string($this->search))
 		{
-			$this->search   = ltrim(substr($this->search, strlen($matches[0])), ' /');
-			$this->methods  = array_unique(
-				array_merge($this->methods, explode('|', trim($matches[0])))
-			);
+			// The search uri may start with allowed methods 'DELETE ' or multiple 'GET|POST|PUT '
+			if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
+			{
+				$this->search   = ltrim(substr($this->search, strlen($matches[0])), ' /');
+				$this->methods  = array_unique(
+					array_merge($this->methods, explode('|', trim($matches[0])))
+				);
+			}
+			$this->search = '/'.trim($this->search, '/');
 		}
 
-		$this->translation  = is_null($translation) ? $this->search : $translation;
+		$this->translation = is_null($translation) ? $this->search : $translation;
+		if (is_string($this->translation))
+		{
+			$this->translation = '/'.trim($this->translation, '/ ');
+		}
 	}
 
 	/**

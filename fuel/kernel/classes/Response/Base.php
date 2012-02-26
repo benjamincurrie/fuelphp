@@ -131,7 +131,7 @@ class Base implements Responsible
 		}
 		else
 		{
-			$this->headers[$name] = array_push($this->headers[$name], $value);
+			array_push($this->headers[$name], $value);
 		}
 
 		return $this;
@@ -156,7 +156,7 @@ class Base implements Responsible
 			return $default;
 		}
 
-		return $all ? end($this->headers[$name]) : $this->headers[$name];
+		return $all ? $this->headers[$name] : end($this->headers[$name]);
 	}
 
 	/**

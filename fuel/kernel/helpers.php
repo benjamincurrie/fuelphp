@@ -79,9 +79,16 @@ function _forge()
  * @param   string              $key
  * @param   array|\ArrayAccess  $data
  * @param   bool                $setting
+ * @return  bool
+ * @throws  \InvalidArgumentException
  */
 function array_set_dot_key($key, &$input, $setting)
 {
+	if ( ! is_array($input) and ! $input instanceof \ArrayAccess)
+	{
+		throw new \InvalidArgumentException('The second argument of array_set_dot_key() must be an array or ArrayAccess object.');
+	}
+
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
 	while (count($keys) > 0)
@@ -110,9 +117,15 @@ function array_set_dot_key($key, &$input, $setting)
  * @param   array|\ArrayAccess  $data
  * @param   mixed               $return
  * @return  bool
+ * @throws  \InvalidArgumentException
  */
 function array_get_dot_key($key, &$input, &$return)
 {
+	if ( ! is_array($input) and ! $input instanceof \ArrayAccess)
+	{
+		throw new \InvalidArgumentException('The second argument of array_get_dot_key() must be an array or ArrayAccess object.');
+	}
+
 	// Explode the key and start iterating
 	$keys = explode('.', $key);
 	while (count($keys) > 0)

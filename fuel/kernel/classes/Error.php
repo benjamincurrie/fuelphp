@@ -50,7 +50,7 @@ class Error
 		{
 			return $e->handle();
 		}
-		static::show_error($e);
+		$this->show_error($e);
 	}
 
 	/**
@@ -60,10 +60,11 @@ class Error
 	 * @param   \Exception  $e  the exception to show
 	 * @return  void
 	 */
-	public static function show_error(\Exception $e)
+	public function show_error(\Exception $e)
 	{
-		$fatal = (bool)( ! in_array($e->getCode(), _env('config')->get('errors.continue_on', array())));
-		$data = $this->prepare_exception($e, $fatal);
+		$continue_on = _app() ? _app('config')->get('errors.continue_on', array()) : array();
+		$fatal       = ! in_array($e->getCode(), $continue_on);
+		$data        = $this->prepare_exception($e, $fatal);
 
 		if ($fatal)
 		{
@@ -72,16 +73,17 @@ class Error
 			{
 				ob_end_clean();
 			}
-			ob_start(_env()->config->get('ob_callback', null));
+			$ob_callback = _app() ? _app('config')->get('ob_callback', null) : null;
+			ob_start($ob_callback);
 		}
 		else
 		{
 			$this->non_fatal_cache[] = $data;
 		}
 
-		if (_env('input')->is_cli())
+		if (_env('is_cli'))
 		{
-			$cli = _env()->get_object('Cli');
+			$cli = _app() ? _app()->get_object('Cli') : _env()->get_object('Cli');
 			$cli->write($cli->color($data['severity'].' - '.$data['message'].' in '.$data['filepath'].' on line '.$data['error_line'], 'red'));
 			$fatal and exit(1);
 			return;
@@ -99,11 +101,12 @@ class Error
 
 			$data['non_fatal'] = $this->non_fatal_cache;
 
-			try
+			$view_fatal = _app() ? _app('config')->get('errors.view_fatal') : '';
+			if ($view_fatal)
 			{
-				exit(_forge('View', _env('config')->get('errors.view_fatal'), $data, false));
+				exit(_forge('View', $view_fatal, $data, false));
 			}
-			catch (\Exception $e)
+			else
 			{
 				exit($data['severity'].' - '.$data['message'].' in '.$data['filepath'].' on line '.$data['error_line']);
 			}

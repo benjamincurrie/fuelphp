@@ -5,6 +5,7 @@ _env()->add_path('kernel', __DIR__, true);
 
 // Add some Kernel classes to the global DiC
 _env('dic')->set_classes(array(
+	'Cli'              => 'Fuel\\Kernel\\Cli',
 	'Config'           => 'Fuel\\Kernel\\Data\\Config',
 	'Error'            => 'Fuel\\Kernel\\Error',
 	'Language'         => 'Fuel\\Kernel\\Data\\Language',
@@ -43,8 +44,8 @@ return _forge('Package')
 
 		'Classes\\Response\\Base'  => 'Fuel\\Kernel\\Response\\Base',
 
-		'Classes\\Router\\Base'  => 'Fuel\\Kernel\\Router\\Base',
-		'Classes\\Router\\Fuel'  => 'Fuel\\Kernel\\Router\\Fuel',
+		'Classes\\Route\\Base'  => 'Fuel\\Kernel\\Route\\Base',
+		'Classes\\Route\\Fuel'  => 'Fuel\\Kernel\\Route\\Fuel',
 
 		'Classes\\View\\Base'  => 'Fuel\\Kernel\\View\\Base',
 	));

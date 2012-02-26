@@ -70,6 +70,11 @@ class Environment
 	public $is_cli = false;
 
 	/**
+	 * @var  bool  Readline is an extension for PHP that makes interactive with PHP much more bash-like
+	 */
+	public $readline_support = false;
+
+	/**
 	 * @var  array  appnames and their classnames
 	 */
 	protected $apps = array();
@@ -226,6 +231,10 @@ class Environment
 	protected function php_env()
 	{
 		$this->is_cli = (bool) defined('STDIN');
+		if ($this->is_cli)
+		{
+			$this->readline_support = extension_loaded('readline');
+		}
 
 		// Detect the base URL when not given
 		if (is_null($this->base_url) and ! $this->is_cli)

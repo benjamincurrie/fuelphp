@@ -42,11 +42,13 @@ class Oil extends Classes\Route\Fuel
 
 	public function matches($uri)
 	{
+		// This route only works when requesting '__commandline'
 		if ($uri != '/__commandline')
 		{
 			return false;
 		}
 
+		// Allow -help/(empty) for helptext and -v/-version to get the Fuel version
 		if (in_array($this->cli->option(1), array('-v', '-version', '-help', null)))
 		{
 			if ($this->cli->option('v', $this->cli->option('version')))
@@ -56,14 +58,17 @@ class Oil extends Classes\Route\Fuel
 			return $this->parse('main/help');
 		}
 
+		// Get the intended Controller
 		$controller = $this->cli->option(1);
 		isset($this->aliases[$controller]) and $controller = $this->aliases[$controller];
 
+		// Attempt to find the Controller
 		if ($this->parse($controller))
 		{
 			return true;
 		}
 
+		// On failure: report it and show help text
 		$this->cli->write('Error: controller for command "'.$controller.'" not found.');
 		return  $this->parse('main/help');
 	}

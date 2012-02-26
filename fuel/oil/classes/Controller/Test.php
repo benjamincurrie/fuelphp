@@ -23,7 +23,7 @@ class Test extends Classes\Controller\Cli
 	public function action_index()
 	{
 		// CD to the root of Fuel and call up phpunit with a path to our config
-		$command = 'cd '.DOCROOT.'; phpunit -c "'._env()->path('fuel').'phpunit.xml"';
+		$command = 'phpunit -c "'._env()->path('fuel').'phpunit.xml"';
 
 		// Respect the group option
 		$this->cli->option('group') and $command .= ' --group '.$this->cli->option('group');
@@ -31,7 +31,7 @@ class Test extends Classes\Controller\Cli
 		// Respect the coverage-html option
 		$this->cli->option('coverage-html') and $command .= ' --coverage-html '.$this->cli->option('coverage-html');
 
-		$this->cli->write('Tests Running...This may take a few moments.', 'green');
+		$this->cli->write('Tests Running... This may take a few moments.', 'green');
 
 		foreach(explode(';', $command) as $c)
 		{

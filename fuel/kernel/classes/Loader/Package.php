@@ -40,11 +40,6 @@ class Package implements Loadable
 	protected $routable = false;
 
 	/**
-	 * @var  string|\Closure  loader used, has build in 'psr' or 'fuelv1' and can be a closure
-	 */
-	protected $loader = 'psr';
-
-	/**
 	 * Attempt to load a class from the package
 	 *
 	 * @param   string  $class
@@ -52,6 +47,9 @@ class Package implements Loadable
 	 */
 	public function load_class($class)
 	{
+		// Save the original classname
+		$original = $class;
+
 		// Check if the class path was registered with the Package
 		if (isset($this->classes[$class]))
 		{
@@ -85,21 +83,7 @@ class Package implements Loadable
 				break;
 			}
 		}
-		$path .= 'classes/';
-
-		// Pick the loader to use, this optimizes PSR and Fuelv1 loaders over any others
-		switch ($this->loader)
-		{
-			case 'psr':
-			case 'psr0':
-				$path .= $this->psr_loader($class, $path);
-				break;
-			case 'fuelv1':
-				$path .= $this->fuelv1_loader($class, $path);
-				break;
-			default:
-				$path .= call_user_func_array($this->loader, array($class, $path));
-		}
+		$path = $this->class_to_path($original, $class, $path.'classes/');
 
 		// When found include the file and return success
 		if (is_file($path))
@@ -111,16 +95,19 @@ class Package implements Loadable
 		// ... still here? Failure.
 		return false;
 	}
+
 	/**
 	 * Converts a classname to a path using PSR-0 conventions
 	 *
 	 * NOTE: using the base namespace setting and usage of modules break PSR-0 convention. The paths are expected
 	 * relative to the base namespace when used and optionally relative to the module's (sub)namespace.
 	 *
-	 * @param   string  $class
+	 * @param   string  $fullname  full classname
+	 * @param   string  $class     classname relative to base/module namespace
+	 * @param   string  $basepath
 	 * @return  string
 	 */
-	protected function psr_loader($class)
+	protected function class_to_path($fullname, $class, $basepath)
 	{
 		$file  = '';
 		if ($last_ns_pos = strripos($class, '\\'))
@@ -131,18 +118,7 @@ class Package implements Loadable
 		}
 		$file .= str_replace('_', '/', $class).'.php';
 
-		return $file;
-	}
-
-	/**
-	 * Converts a classname to a path using Fuel v1.x convention, which means PSR-0 modified to lowercase.
-	 *
-	 * @param   string  $class
-	 * @return  string
-	 */
-	protected function fuelv1_loader($class)
-	{
-		return strtolower($this->psr_loader($class));
+		return $basepath.$file;
 	}
 
 	/**
@@ -257,23 +233,6 @@ class Package implements Loadable
 	public function remove_class($class)
 	{
 		unset($this->classes[$class]);
-		return $this;
-	}
-
-	/**
-	 * Change the type of class loader used, by default 'psr' and 'fuelv1' included
-	 *
-	 * @param   string  $loader
-	 * @return  Package
-	 * @throws  \RuntimeException
-	 */
-	public function set_loader($loader)
-	{
-		if ( ! method_exists($this, $loader.'_loader') and ! is_callable($loader))
-		{
-			throw new \RuntimeException('Loader type '.$loader.' not found in the Package instance.');
-		}
-		$this->loader = $loader;
 		return $this;
 	}
 

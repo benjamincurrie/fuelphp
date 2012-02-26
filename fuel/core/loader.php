@@ -2,10 +2,13 @@
 
 // Add some Core classes to the global DiC
 _env('dic')->set_classes(array(
-	'Request_Curl'   => 'Fuel\\Core\\Request\\Curl',
-	'Security_Xss'   => 'Fuel\\Core\\Security\\String\\Xss',
-	'View_Markdown'  => 'Fuel\\Core\\View\\Markdown',
-	'View_Twig'      => 'Fuel\\Core\\View\\Twig',
+	'Loader_Closure'    => 'Fuel\\Core\\Loader\\Closure',
+	'Loader_Composer'   => 'Fuel\\Core\\Loader\\Composer',
+	'Loader_Lowercase'  => 'Fuel\\Core\\Loader\\Lowercase',
+	'Request_Curl'      => 'Fuel\\Core\\Request\\Curl',
+	'Security_Xss'      => 'Fuel\\Core\\Security\\String\\Xss',
+	'View_Markdown'     => 'Fuel\\Core\\View\\Markdown',
+	'View_Twig'         => 'Fuel\\Core\\View\\Twig',
 ));
 
 // Forge and return the Core Package object

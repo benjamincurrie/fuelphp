@@ -32,6 +32,7 @@ namespace Classes\DiC
 
 namespace Classes\Loader
 {
+	interface Loadable extends \Fuel\Kernel\Loader\Loadable {}
 	class Package extends \Fuel\Kernel\Loader\Package {}
 }
 

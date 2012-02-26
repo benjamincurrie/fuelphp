@@ -11,3 +11,5 @@ apps/*/logs/*/*
 apps/*/cache/*/*
 nbproject/
 .idea
+
+/fuel/composer.lock

@@ -55,6 +55,7 @@ namespace Classes\Route
 {
 	abstract class Base extends \Fuel\Kernel\Route\Base {}
 	class Fuel extends \Fuel\Kernel\Route\Fuel {}
+	class Oil extends \Fuel\Oil\Route\Oil {}
 }
 
 namespace Classes\View

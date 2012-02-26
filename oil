@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Configure paths
+ * (these constants are helpers and are not required by Fuel itself)
+ */
+define('DOCROOT', __DIR__.'/public/');
+define('FUELPATH', DOCROOT.'../fuel/');
+define('APPPATH', FUELPATH.'oil/');
+
+/**
+ * Setup environment
+ */
+require FUELPATH.'kernel/classes/Environment.php';
+use Fuel\Kernel\Environment;
+$env = Environment::instance()->init(array(
+	'name'  => isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : 'development',
+	'path'  => FUELPATH,
+));
+
+// Uncomment the following line to enable the Fuel 1.x Legacy classes
+// _loader()->add_global_ns_alias('Fuel\\Core\\Legacy');
+
+/**
+ * Initialize Application in package 'app'
+ */
+$app = _loader()->load_app('oil', function() {});
+$cli = $app->get_object('Cli');
+
+/**
+ * Run Oil
+ */
+try
+{
+	$app->request('__commandline')->execute();
+}
+catch (\Exception $e)
+{
+	$cli->error('Error: '.$e->getMessage());
+	$cli->beep();
+	$cli->option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
+}

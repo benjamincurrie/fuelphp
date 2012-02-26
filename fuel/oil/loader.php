@@ -7,5 +7,6 @@ return _forge('Package')
 	->set_path(__DIR__)
 	->set_namespace('Fuel\\Oil')
 	->add_class_aliases(array(
-		'Classes\\Route\\Oil'  => 'Fuel\\Oil\\Route\\Oil',
+		'Classes\\Controller\\Cli'  => 'Fuel\\Oil\\Controller\\Cli',
+		'Classes\\Route\\Oil'       => 'Fuel\\Oil\\Route\\Oil',
 	));

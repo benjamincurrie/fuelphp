@@ -3,7 +3,7 @@
 namespace Fuel\Oil\Controller;
 use Classes;
 
-class Main extends Classes\Controller\Base
+class Main extends Classes\Controller\Cli
 {
 	/**
 	 * Returns the Fuel version

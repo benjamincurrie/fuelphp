@@ -36,7 +36,9 @@ try
 }
 catch (\Exception $e)
 {
-	$cli->error('Error: '.$e->getMessage());
+	$cli->error(get_class($e).': '.$e->getMessage());
+	$cli->error('    file: '.$e->getFile());
+	$cli->error('    line: '.$e->getLine());
 	$cli->beep();
 	$cli->option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
 }

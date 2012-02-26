@@ -42,15 +42,12 @@ class Oil extends Classes\Route\Fuel
 
 	public function matches($uri)
 	{
-		if ($uri != '__commandline')
+		if ($uri != '/__commandline')
 		{
 			return false;
 		}
 
-		// Remove flag options from the main argument list
-		$args = $this->app->active_request()->input->server('argv');
-
-		if ( ! isset($args[1]))
+		if ($this->cli->option(1) == null)
 		{
 			if ($this->cli->option('v', $this->cli->option('version')))
 			{
@@ -59,9 +56,10 @@ class Oil extends Classes\Route\Fuel
 			return $this->parse('main/help');
 		}
 
-		isset($this->aliases[$args[1]]) and $args[1] = $this->aliases[$args[1]];
+		$controller = $this->cli->option(1);
+		isset($this->aliases[$controller]) and $controller = $this->aliases[$controller];
 
-		return $this->parse($args[1]) or $this->parse('main/help');
+		return $this->parse($controller) or $this->parse('main/help');
 	}
 
 	/**

@@ -1,8 +1,9 @@
 <?php
 
 namespace Fuel\Kernel\Route;
+use Classes;
 
-class Fuel extends Base
+class Fuel extends Classes\Route\Base
 {
 	/**
 	 * @var  array  HTTP methods
@@ -39,12 +40,12 @@ class Fuel extends Base
 			// The search uri may start with allowed methods 'DELETE ' or multiple 'GET|POST|PUT '
 			if (preg_match('#^(GET\\|?|POST\\|?|PUT\\|?|DELETE\\|?)+ #uD', $this->search, $matches))
 			{
-				$this->search   = ltrim(substr($this->search, strlen($matches[0])), ' /');
+				$this->search   = ltrim(substr($this->search, strlen($matches[0])), '/ ');
 				$this->methods  = array_unique(
 					array_merge($this->methods, explode('|', trim($matches[0])))
 				);
 			}
-			$this->search = '/'.trim($this->search, '/');
+			$this->search = '/'.trim($this->search, '/ ');
 		}
 
 		$this->translation = is_null($translation) ? $this->search : $translation;
@@ -108,7 +109,7 @@ class Fuel extends Base
 		}
 
 		// Return Controller when found
-		if (is_string($translation) and ($controller = $this->find_controller($translation)))
+		if (is_string($translation) and ($controller = $this->find_class($translation)))
 		{
 			$this->match = array($this->app->forge($controller), 'router');
 			return true;
@@ -124,7 +125,7 @@ class Fuel extends Base
 	 * @param   $uri
 	 * @return  bool|string
 	 */
-	protected function find_controller($uri)
+	protected function find_class($uri)
 	{
 		$uri_array = explode('/', trim($uri, '/'));
 		while ($uri_array)

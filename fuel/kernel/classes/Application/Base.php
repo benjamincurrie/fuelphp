@@ -313,7 +313,7 @@ abstract class Base
 	 */
 	public function find_class($type, $controller)
 	{
-		// First attempt the Application
+		// First try the Application loader
 		if ($found = $this->loader->find_class($type, $controller))
 		{
 			return $found;

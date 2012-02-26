@@ -1,9 +1,8 @@
 <?php
 
-namespace Fuel\Core\Legacy;
-use Fuel\Core\Legacy;
+namespace Fuel\Legacy;
 
-class Input extends Legacy
+class Input extends _Singleton
 {
 	protected static $classname = 'Input';
 

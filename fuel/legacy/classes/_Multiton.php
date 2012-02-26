@@ -1,9 +1,8 @@
 <?php
 
-namespace Fuel\Core\Legacy;
-use Fuel\Core\Legacy;
+namespace Fuel\Legacy;
 
-abstract class Instance extends Legacy
+abstract class _Multiton extends _Singleton
 {
 	/**
 	 * Forges an object for this front

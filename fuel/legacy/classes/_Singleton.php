@@ -1,9 +1,9 @@
 <?php
 
-namespace Fuel\Core;
+namespace Fuel\Legacy;
 
 // As abstract static functions are forbidden:
-interface Legacy_Interface
+interface _Instance_Interface
 {
 	/**
 	 * Fetches an instance for this front
@@ -14,7 +14,7 @@ interface Legacy_Interface
 	public static function instance();
 }
 
-abstract class Legacy implements Legacy_Interface
+abstract class _Singleton implements _Instance_Interface
 {
 	/**
 	 * @var  string  (required) Overwrite for the classname this front represents

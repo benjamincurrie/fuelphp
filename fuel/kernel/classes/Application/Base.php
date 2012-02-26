@@ -9,23 +9,6 @@ use Fuel\Kernel\Route;
 abstract class Base
 {
 	/**
-	 * Serve the application as configured the name
-	 *
-	 * @param   string   $appname
-	 * @param   Closure  $config
-	 * @return  Base
-	 * @throws  \OutOfBoundsException
-	 */
-	public static function load($appname, \Closure $config)
-	{
-		$loader = _loader()->load_package($appname, Loader::TYPE_APP);
-		$loader->set_routable(true);
-
-		$class = _env()->app_class($appname);
-		return new $class($config, $loader);
-	}
-
-	/**
 	 * @var  \Fuel\Kernel\Loader\Loadable  the Application's own loader instance
 	 */
 	public $loader;

@@ -103,6 +103,23 @@ class Loader
 	}
 
 	/**
+	 * Load application and return instantiated
+	 *
+	 * @param   string   $appname
+	 * @param   Closure  $config
+	 * @return  \Fuel\Kernel\Application\Base
+	 * @throws  \OutOfBoundsException
+	 */
+	public static function load_app($appname, \Closure $config)
+	{
+		$loader = _loader()->load_package($appname, Loader::TYPE_APP);
+		$loader->set_routable(true);
+
+		$class = _env()->app_class($appname);
+		return new $class($config, $loader);
+	}
+
+	/**
 	 * Attempts to load a class from a package
 	 *
 	 * @param   string  $class

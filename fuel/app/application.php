@@ -1,7 +1,7 @@
 <?php
 
 use Classes\Application;
-use Classes\Route;
+use Classes\Route\Fuel as Route;
 
 class App extends Application\Base
 {

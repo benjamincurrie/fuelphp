@@ -24,8 +24,7 @@ $env = Environment::instance()->init(array(
 /**
  * Initialize Application in package 'app'
  */
-use Fuel\Kernel\Application\Base as Application;
-$app = Application::load('app', function() {});
+$app = _loader()->load_app('app', function() {});
 
 /**
  * Run the app and output the response

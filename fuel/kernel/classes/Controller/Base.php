@@ -57,11 +57,23 @@ abstract class Base
 			throw new Request\Exception_404('Unavailable action "'.$method.'" in Controller: '.get_class($this));
 		}
 
+		return $this->execute($method, $args);
+	}
+
+	/**
+	 * Executes the given method and returns a Responsible object
+	 *
+	 * @param   \ReflectionMethod|string  $method
+	 * @param   array  $args
+	 * @return  \Fuel\Kernel\Response\Responsible
+	 */
+	public function execute($method, array $args = array())
+	{
+		! $method instanceof \ReflectionMethod and $method = new \ReflectionMethod($this, $method);
+
 		$this->before();
 		$response = $method->invokeArgs($this, $args);
-		$response = $this->after($response);
-
-		return $response;
+		return $this->after($response);
 	}
 
 	/**

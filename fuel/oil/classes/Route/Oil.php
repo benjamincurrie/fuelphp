@@ -109,9 +109,14 @@ class Oil extends Classes\Route\Base
 	 */
 	protected function find_task($uri)
 	{
-		if ($task = $this->app->find_class('Task', $uri))
+		$uri_array = explode('/', trim($uri, '/'));
+		while ($uri_array)
 		{
-			return $task;
+			if ($controller = $this->app->find_class('Task', implode('/', $uri_array)))
+			{
+				return $controller;
+			}
+			array_unshift($this->segments, array_pop($uri_array));
 		}
 		return false;
 	}

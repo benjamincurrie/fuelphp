@@ -13,7 +13,7 @@ class Composer extends Classes\Task\Base
 	public function before()
 	{
 		// CD to the root of Fuel and call up phpunit with a path to our config
-		$this->command = 'php '._env()->path('fuel').'oil/vendor/Composer/composer.phar ';
+		$this->command = 'php '._env()->path('fuel').'oil/resources/vendor/Composer/composer.phar ';
 	}
 
 	public function after($response)

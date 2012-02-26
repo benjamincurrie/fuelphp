@@ -27,9 +27,4 @@ return array(
 	'production' => function() {
 		error_reporting(0);
 	},
-
-	'testing' => function() {
-		error_reporting(-1);
-		include_once 'PHPUnit/Autoload.php';
-	},
 );

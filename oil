@@ -29,7 +29,13 @@ $cli = $app->get_object('Cli');
  */
 try
 {
-	$app->request('__commandline')->execute();
+	$uri = '';
+	$i = 1;
+	while (($arg = $cli->option($i++)) and strncmp($arg, '-', 1) != 0)
+	{
+		$uri .= '/'.$arg;
+	}
+	$app->request($uri)->execute();
 }
 catch (\Exception $e)
 {

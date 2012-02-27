@@ -35,15 +35,13 @@ class Task extends Classes\Route\Fuel
 			return false;
 		}
 
-		// Attempt to find the Controller
-		$uri = $this->cli->option(1);
-		if (parent::matches('/'.$uri))
+		if (parent::matches($uri))
 		{
 			return true;
 		}
 
-		// When the search matches the translation this is the hail mary
-		if ($this->search === $this->translation)
+		// When the search matches the translation this is the hail mary attempt
+		if ($this->search == $this->translation)
 		{
 			$this->cli->write('Error: controller for command "'.$uri.'" not found.');
 			return  $this->parse('main/help');
